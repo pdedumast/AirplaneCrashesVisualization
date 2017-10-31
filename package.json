@@ -1,0 +1,10 @@
+{
+  "name": "AirplaneCrachesVisualization",
+  "version": "1.0.0",
+  "description": "Airplane Craches Visualization",
+  "author": "Thibaut Chamard <tchamard@gmail.com>",
+  "main": "app/server.js",
+  "scripts": {
+    "start":"http-server -a localhost -p 3000"
+  }
+}
