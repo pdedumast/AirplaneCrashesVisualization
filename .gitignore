@@ -1,3 +1,4 @@
 dist
+data/credentials.json
 .ipynb_checkpoints/
 node_modules
