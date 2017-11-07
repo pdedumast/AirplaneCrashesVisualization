@@ -46,7 +46,9 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
            .attr("cy", function(d) {
                return projection([d.lng, d.lat])[1];
            })
-           .attr("r", 5)
+           .attr("r", function(d) {
+               return d.Fatalities / 5 ;
+           })
            .style("fill", "yellow")
            .style("opacity", 0.75);
 
