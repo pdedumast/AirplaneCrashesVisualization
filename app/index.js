@@ -1,11 +1,12 @@
 
 //Width and height
-var w = 800;
-var h = 500;
+var width = 800;
+var height = 500;
+var padding = 50; 
 
 //Define map projection
 var projection = d3.geoMercator()
-                    .translate([w/2, h/2])
+                    .translate([width/2, height/2])
                     .scale([100]);
 
 //Define default path generator
@@ -19,8 +20,8 @@ var color = d3.scaleQuantize()
 //Create SVG element
 var svg = d3.select("body")
             .append("svg")
-            .attr("width", w)
-            .attr("height", h);
+            .attr("width", width)
+            .attr("height", height);
 
 
 //Load in GeoJSON data
@@ -35,6 +36,20 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
     
     //Load in cities data
     d3.csv("/data/aircrashes1.csv", function(data) {
+        
+         // Scale
+        var date_min = new Date( d3.min(data, d => d["Date"]) , 1, 1);
+        var date_max = new Date( d3.max(data, d => d["Date"]), 1, 1);
+        date_max.setFullYear(date_max.getFullYear()+1);
+        var timeScale = d3.scaleLinear()
+                            .domain( [date_min, date_max ])
+                            .range([padding, width - padding]);
+
+        var fatalities_min = d3.min(data, d => d["Fatalities"]);
+        var fatalities_max = d3.max(data, d => d["Fatalities"]);
+        var fatalitiesScale = d3.scaleLinear()
+                            .domain( [fatalities_min, fatalities_max ])
+                            .range([0.5, 3.5]);
 
         svg.selectAll("circle")
            .data(data)
@@ -47,7 +62,7 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
                return projection([d.lng, d.lat])[1];
            })
            .attr("r", function(d) {
-               return d.Fatalities / 5 ;
+               return fatalitiesScale( d.Fatalities );
            })
            .style("fill", "yellow")
            .style("opacity", 0.75);
