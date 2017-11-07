@@ -10,7 +10,7 @@ var projection = d3.geoMercator()
 
 //Define default path generator
 var path = d3.geoPath()
-            .projection(projection);;
+            .projection(projection);
 
 //Define quantize scale to sort data values into buckets of color
 var color = d3.scaleQuantize()
