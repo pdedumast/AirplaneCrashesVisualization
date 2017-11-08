@@ -99,7 +99,7 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         graph.append("g")
 				.attr("class", "brush")
 				.call(d3.brushX()
-				.extent([[0, 0], [width, height]])
+				.extent([[padding, 0], [width - padding, height/3 + padding]])
 				.on("end", brushended));
 
 
