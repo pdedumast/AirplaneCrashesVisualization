@@ -1,10 +1,10 @@
 //Width and height
-var width = 1000;
-var height = 500;
-var padding = 50;
+const width = 1000;
+const height = 500;
+const padding = 50;
 
 //Define map projection
-var projection = d3.geoMercator()
+let projection = d3.geoMercator()
                     .translate([width/2, height/2])
                     .scale([120]);
 
@@ -12,17 +12,17 @@ var projection = d3.geoMercator()
 projection = d3.geoNaturalEarth1();
 
 //Define default path generator
-var path = d3.geoPath()
+let path = d3.geoPath()
             .projection(projection);
 
 //Create SVG element : map
-var map = d3.select("body")
+let map = d3.select("body")
             .append("svg")
             .attr("width", width)
             .attr("height", height);
 
 //Create SVG element : graph
-var graph = d3.select("body")
+let graph = d3.select("body")
             .append("svg")
             .attr("width", width)
             .attr("height", height/3);
@@ -46,16 +46,16 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
     d3.csv("/data/aircrashes1.csv", function(data) {
 
          // Define scales
-        var date_min = new Date( d3.min(data, d => d["Date"]));
-        var date_max = new Date( d3.max(data, d => d["Date"]));
+        const date_min = new Date( d3.min(data, d => d["Date"]));
+        const date_max = new Date( d3.max(data, d => d["Date"]));
         date_max.setFullYear(date_max.getFullYear()+1);
-        var timeScale = d3.scaleLinear()
+        let timeScale = d3.scaleLinear()
                             .domain( [date_min, date_max ])
                             .range([padding, width - padding]);
 
 
-        var fatalities_max = d3.max(data, d => d["Fatalities"]);
-        var fatalitiesScale = d3.scaleLinear()
+        const fatalities_max = d3.max(data, d => d["Fatalities"]);
+        const fatalitiesScale = d3.scaleLinear()
                             .domain( [ 0, fatalities_max ])
                             .range([ height/3 - padding, 0 ]);
 
