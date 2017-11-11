@@ -2,14 +2,10 @@
 const width = 1000;
 const height = 500;
 const padding = 50;
-let active = d3.select(null);
 
 /* *************************************************** */
 // Functions to manage zooming and dragging on the map
 function reset() {
-  active.classed("active", false);
-  active = d3.select(null);
-
   map.transition()
       .duration(750)
       .call( zoom.transform, d3.zoomIdentity );
@@ -79,6 +75,7 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         .style("fill", "#fcda94")
         .style('stroke', '#fcbf94')
         .style('stroke-width', '0.4')
+        .on("click", reset);
 
     //Load airplane crashes data
     d3.csv("/data/aircrashes1.csv", function(data) {
