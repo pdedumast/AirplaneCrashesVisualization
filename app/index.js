@@ -1,12 +1,15 @@
 //Width and height
-var width = 800;
+var width = 1000;
 var height = 500;
-var padding = 50; 
+var padding = 50;
 
 //Define map projection
 var projection = d3.geoMercator()
                     .translate([width/2, height/2])
                     .scale([120]);
+
+//overwrite projection for tests
+projection = d3.geoNaturalEarth1();
 
 //Define default path generator
 var path = d3.geoPath()
@@ -35,12 +38,13 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         .enter()
         .append("path")
         .attr("d", path)
+        .style("fill", "#fcda94")
         .attr("class", "map");
-        
-    
+
+
     //Load airplane crashes data
     d3.csv("/data/aircrashes1.csv", function(data) {
-        
+
          // Define scales
         var date_min = new Date( d3.min(data, d => d["Date"]));
         var date_max = new Date( d3.max(data, d => d["Date"]));
@@ -49,13 +53,13 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
                             .domain( [date_min, date_max ])
                             .range([padding, width - padding]);
 
-       
+
         var fatalities_max = d3.max(data, d => d["Fatalities"]);
         var fatalitiesScale = d3.scaleLinear()
                             .domain( [ 0, fatalities_max ])
                             .range([ height/3 - padding, 0 ]);
-        
-         
+
+
         // Show crashes on the map
         map.selectAll("circle")
            .data(data)
@@ -67,21 +71,21 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
            .attr("cy", function(d) {
                return projection([d.lng, d.lat])[1];
            })
-           .attr("r", function(d) { 
+           .attr("r", function(d) {
                return 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 50;
            })
-           .style("fill", "yellow")
+           .style("fill", "red")
            .style("opacity", 0.75);
-        
-        
+
+
         // Draw axis
         const xAxis = d3.axisBottom( timeScale )
-				        .tickFormat( d3.timeFormat("%Y") );				
+				        .tickFormat( d3.timeFormat("%Y") );
         graph.append("g")
             .attr("class", "axis axis--grid")
             .attr("transform", "translate(0," + (height/3 - padding) + ")")
             .call(xAxis)
-            .selectAll("text") // Rotate labels 
+            .selectAll("text") // Rotate labels
             .style("text-anchor", "end")
             .attr("dx", "-.8em")
             .attr("dy", ".15em")
@@ -95,7 +99,7 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
             .attr("class", "axis")
             .attr("transform", "translate(" + padding + ",0)")
             .call(yAxis);
-       
+
         graph.append("g")
 				.attr("class", "brush")
 				.call(d3.brushX()
