@@ -2,6 +2,35 @@
 const width = 1000;
 const height = 500;
 const padding = 50;
+let active = d3.select(null);
+
+/* *************************************************** */
+// Functions to manage zooming and dragging on the map
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
+
+  map.transition()
+      .duration(750)
+      .call( zoom.transform, d3.zoomIdentity );
+}
+
+function zoomed() {
+  country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+  country.attr("transform", d3.event.transform);
+}
+
+var zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
+
+// If the drag behavior prevents the default click,
+// also stop propagation so we don’t click-to-zoom.
+function stopped() {
+  if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}
+/* **************************************************** */
+
 
 //Define map projection
 let projection = d3.geoMercator()
@@ -19,7 +48,16 @@ let path = d3.geoPath()
 let map = d3.select("body")
             .append("svg")
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+            .on("click", stopped, true);
+map.append("rect")
+    .attr("class", "background")
+    .attr("width", width)
+    .attr("height", height)
+    .on("click", reset);
+let country = map.append("g");
+map.call(zoom);
+
 
 //Create SVG element : graph
 let graph = d3.select("body")
@@ -33,14 +71,14 @@ let graph = d3.select("body")
 d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 
     //Bind data and create one path per GeoJSON feature
-    map.selectAll("path")
+    country.selectAll("path")
         .data(json.features)
         .enter()
         .append("path")
         .attr("d", path)
         .style("fill", "#fcda94")
-        .attr("class", "map");
-
+        .style('stroke', '#fcbf94')
+        .style('stroke-width', '0.4')
 
     //Load airplane crashes data
     d3.csv("/data/aircrashes1.csv", function(data) {
@@ -114,3 +152,12 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
     }
 
 });
+
+
+
+/*
+Sources 
+Countries GeoJson : https://github.com/johan/world.geo.json
+Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
+Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
+*/
