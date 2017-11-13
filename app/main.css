@@ -2,6 +2,14 @@ body {
     background-color: #b5d0d0;
 }
 .background {
-  fill: none;
-  pointer-events: all;
+    fill: none;
+    pointer-events: all;
+}
+
+.toolTip {
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
 }

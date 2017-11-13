@@ -3,6 +3,8 @@ const width = 1000;
 const height = 500;
 const padding = 50;
 
+let tooltip
+
 /* *************************************************** */
 // Functions to manage zooming and dragging on the map
 function reset() {
@@ -17,7 +19,7 @@ function zoomed() {
     map.selectAll("circle").attr("transform", d3.event.transform);
 }
 
-var zoom = d3.zoom()
+let zoom = d3.zoom()
     .scaleExtent([1, 8])
     .on("zoom", zoomed);
 
@@ -94,24 +96,39 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         const fatalitiesScale = d3.scaleLinear()
                             .domain( [ 0, fatalities_max ])
                             .range([ height/3 - padding, 0 ]);
+        
+        // Define tooltip for crashes market
+        tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
 
 
         // Show crashes on the map
         map.selectAll("circle")
-           .data(data)
-           .enter()
-           .append("circle")
-           .attr("cx", function(d) {
-               return projection([d.lng, d.lat])[0];
-           })
-           .attr("cy", function(d) {
-               return projection([d.lng, d.lat])[1];
-           })
-           .attr("r", function(d) {
-               return 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 50;
-           })
-           .style("fill", "red")
-           .style("opacity", 0.75);
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) {
+                return projection([d.lng, d.lat])[0];
+            })
+            .attr("cy", function(d) {
+                return projection([d.lng, d.lat])[1];
+            })
+            .attr("r", function(d) {
+                return 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 70;
+            })
+            .style("fill", "red")
+            .style("opacity", 0.7)
+            .on("click", function(d){
+                tooltip
+                  .style("left", d3.event.pageX + "px")
+                  .style("top", d3.event.pageY + "px")
+                  .style("display", "inline-block")
+           
+                  .html( (d.Date) + "<br>"
+                        + (d.Location) + "<br>" 
+                        + "Operator : " + (d.Operator) + "<br>" 
+                        + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard));
+        })
 
 
         // Draw axis
@@ -158,4 +175,5 @@ Sources
 Countries GeoJson : https://github.com/johan/world.geo.json
 Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
 Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
+ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 */
