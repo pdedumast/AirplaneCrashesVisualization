@@ -12,8 +12,9 @@ function reset() {
 }
 
 function zoomed() {
-  country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
-  country.attr("transform", d3.event.transform);
+    country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+    country.attr("transform", d3.event.transform);
+    map.selectAll("circle").attr("transform", d3.event.transform);
 }
 
 var zoom = d3.zoom()
