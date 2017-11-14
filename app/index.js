@@ -67,7 +67,7 @@ let graph = d3.select("body")
 
 // Define scales range
 let timeScale = d3.scaleLinear().range([padding, width - padding]);
-const fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
+let fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
 
 
 //Load in GeoJSON data
@@ -161,8 +161,19 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 
         // Filter by year
         console.log("avant data_by_year");
-        let data_by_year = data.filter(function(d) { return d["Data"] < 2000 })
-        console.log(data_by_year);
+
+        // Create list of kept years
+        const list_years = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
+        my_list_years = list_years(2010, 2015)
+        console.log(my_list_years);
+
+        // Keep only selected years
+        const nested_data = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
+
+        // Sum fatalities over the years
+        const nested_data_year =  nested_data.map
+        console.log(new Date(nested_data[0].Date));
+
         console.log("après data_by_year");
 
     });
@@ -172,8 +183,6 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
       // Get year range selected
       var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
       console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
-
-
     }
 
 });
