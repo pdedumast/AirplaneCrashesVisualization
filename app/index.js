@@ -161,20 +161,19 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 				.extent([[padding, 0], [width - padding, height/3 + padding]])
 				.on("end", brushended));
 
-        // Filter by year
-        console.log("avant data_by_year");
+        // *** Filter by year ***
+        let year_min = 1920, year_max = 1925;
 
         // Create list of kept years
         const list_years = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
-        my_list_years = list_years(2010, 2015)
-        console.log(my_list_years);
+        my_list_years = list_years(year_min, year_max)
 
         // Keep only selected years
-        const nested_data = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
+        const data_selectedYears = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
 
         // Sum fatalities over the years
-        const nested_data_year =  nested_data.map
-        console.log(new Date(nested_data[0].Date));
+        const nested_data_year =  data_selectedYears.map
+        console.log(new Date(data_selectedYears[0].Date));
 
         console.log("après data_by_year");
 
