@@ -3,7 +3,6 @@ const width = 1000;
 const height = 500;
 const padding = 50;
 
-console.log("Mathmout est dans sa douche !!");
 let tooltip
 
 /* *************************************************** */
@@ -164,18 +163,28 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         // *** Filter by year ***
         let year_min = 1920, year_max = 1925;
 
-        // Create list of kept years
-        const list_years = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
-        my_list_years = list_years(year_min, year_max)
+        // Create list of selected years
+        const integerList = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
+        listYears = integerList(year_min, year_max)
+        console.log(listYears);
 
         // Keep only selected years
+        let crashesByYear = [listYears.length];
+        for (var i = 0; i < listYears.length; i++) {
+          const current_year = listYears[i];
+          let num_crashes = data.filter((elem) => new Date(elem.Date).getFullYear() == current_year).length;
+
+          crashesByYear[i] = {'Year': current_year,
+                              'Crashes': num_crashes};
+        }
+
+        console.log("crashesByYear");
+        console.log(crashesByYear);
         const data_selectedYears = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
 
         // Sum fatalities over the years
         const nested_data_year =  data_selectedYears.map
         console.log(new Date(data_selectedYears[0].Date));
-
-        console.log("après data_by_year");
 
     });
 
@@ -198,4 +207,5 @@ Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 
 Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
+Dot plot histogram: https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
