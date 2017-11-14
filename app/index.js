@@ -8,15 +8,17 @@ let tooltip
 /* *************************************************** */
 // Functions to manage zooming and dragging on the map
 function reset() {
-  map.transition()
+    map.transition()
       .duration(750)
       .call( zoom.transform, d3.zoomIdentity );
+    tooltip.style("display", "none");
 }
 
 function zoomed() {
     country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
     country.attr("transform", d3.event.transform);
     map.selectAll("circle").attr("transform", d3.event.transform);
+    tooltip.style("display", "none");
 }
 
 let zoom = d3.zoom()
@@ -27,6 +29,7 @@ let zoom = d3.zoom()
 // also stop propagation so we don’t click-to-zoom.
 function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
+    tooltip.style("display", "none");
 }
 /* **************************************************** */
 
