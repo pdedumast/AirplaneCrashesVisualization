@@ -133,8 +133,7 @@ function Map(){
             .append("circle")
             .attr("cx", d => projection([d.lng, d.lat])[0])
             .attr("cy", d => projection([d.lng, d.lat])[1])
-            .attr("r", d => 3)
-                  //fatalitiesScale(d.Fatalities))
+            .attr("r", d => fatalitiesScale(d.Fatalities))
             .style("fill", "red")
             .style("opacity", 0.7);
             /*.on("click", function(d){
@@ -169,7 +168,10 @@ d3.json("/world.geo.json-master/countries.geo.json", function(error, json) {
 //Load airplane crashes data
 d3.csv("/data/aircrashes1.csv", function(error, data) {
     if (error) throw error;
+    
     // Show crashes on the map
+    const fatalities_max = d3.max(data, d => d["Fatalities"]);
+    fatalitiesScale.domain( [ 0, fatalities_max ]);
     map.drawCrashes(data);
 
 
@@ -178,11 +180,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
     date_max.setFullYear(date_max.getFullYear()+1);
     timeScale.domain( [date_min, date_max]);
-
-
-    const fatalities_max = d3.max(data, d => d["Fatalities"]);
-    fatalitiesScale.domain( [ 0, fatalities_max ]);
-
+   
     crashesGroupByYear = d3.nest()
     .key( function(d){
         return new Date(d.Date).getFullYear() })
