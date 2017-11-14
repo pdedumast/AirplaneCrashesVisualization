@@ -437,6 +437,7 @@ Countries GeoJson : https://github.com/johan/world.geo.json
 Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
 Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
 Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
 Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
