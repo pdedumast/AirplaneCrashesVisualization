@@ -3,6 +3,7 @@ const width = 1000;
 const height = 500;
 const padding = 50;
 
+console.log("Mathmout est dans sa douche !!");
 let tooltip
 
 /* *************************************************** */
@@ -64,6 +65,9 @@ let graph = d3.select("body")
             .attr("width", width)
             .attr("height", height/3);
 
+// Define scales range
+let timeScale = d3.scaleLinear().range([padding, width - padding]);
+const fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
 
 
 //Load in GeoJSON data
@@ -83,20 +87,16 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
     //Load airplane crashes data
     d3.csv("/data/aircrashes1.csv", function(data) {
 
-         // Define scales
+         // Define scales DOMAIN
         const date_min = new Date( d3.min(data, d => d["Date"]));
         const date_max = new Date( d3.max(data, d => d["Date"]));
         date_max.setFullYear(date_max.getFullYear()+1);
-        let timeScale = d3.scaleLinear()
-                            .domain( [date_min, date_max ])
-                            .range([padding, width - padding]);
-
+        timeScale.domain( [date_min, date_max]);
 
         const fatalities_max = d3.max(data, d => d["Fatalities"]);
-        const fatalitiesScale = d3.scaleLinear()
-                            .domain( [ 0, fatalities_max ])
-                            .range([ height/3 - padding, 0 ]);
-        
+        fatalitiesScale.domain( [ 0, fatalities_max ]);
+
+
         // Define tooltip for crashes market
         tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
@@ -123,10 +123,10 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
                   .style("left", d3.event.pageX + "px")
                   .style("top", d3.event.pageY + "px")
                   .style("display", "inline-block")
-           
+
                   .html( (d.Date) + "<br>"
-                        + (d.Location) + "<br>" 
-                        + "Operator : " + (d.Operator) + "<br>" 
+                        + (d.Location) + "<br>"
+                        + "Operator : " + (d.Operator) + "<br>"
                         + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard));
         })
 
@@ -159,11 +159,21 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 				.extent([[padding, 0], [width - padding, height/3 + padding]])
 				.on("end", brushended));
 
+        // Filter by year
+        console.log("avant data_by_year");
+        let data_by_year = data.filter(function(d) { return d["Data"] < 2000 })
+        console.log(data_by_year);
+        console.log("après data_by_year");
 
     });
 
     function brushended() {
-        // TODO when brush
+      // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+      // Get year range selected
+      var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
+      console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
+
+
     }
 
 });
@@ -171,9 +181,11 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 
 
 /*
-Sources 
+Sources
 Countries GeoJson : https://github.com/johan/world.geo.json
 Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
 Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+
+Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
 */
