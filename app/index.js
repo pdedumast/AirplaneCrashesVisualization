@@ -2,6 +2,7 @@
 const width = 1000;
 const height = 500;
 const padding = 50;
+var margin = {top: 10, right: 30, bottom: 30, left: 30};
 
 let tooltip
 
@@ -178,13 +179,82 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
                               'Crashes': num_crashes};
         }
 
-        console.log("crashesByYear");
-        console.log(crashesByYear);
-        const data_selectedYears = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
 
-        // Sum fatalities over the years
-        const nested_data_year =  data_selectedYears.map
-        console.log(new Date(data_selectedYears[0].Date));
+        graph.append("g")
+              .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+        // Set up the binning parameters for the histogram
+        var nbins = crashesByYear.length;
+
+        var histogram = d3.histogram()
+          .domain(timeScale.domain())
+          // Freedman–Diaconis rule
+          // .thresholds(d3.thresholdFreedmanDiaconis(data.map(function (d){ return d.Value}),
+          //                                          Math.min.apply(null, data.map(function (d){ return d.Value})),
+          //                                          Math.max.apply(null, data.map(function (d){ return d.Value}))))
+          .thresholds(timeScale.ticks(nbins))
+          .value(function(d) { return d.Crashes;} )
+
+        // Compute the histogram
+        var bins = histogram(crashesByYear);
+
+        console.log(bins);
+
+        // radius dependent of data length
+        var radius = fatalitiesScale(crashesByYear.length - 1)/2;
+        console.log("RADIUS " + radius);
+
+        // bins objects
+        var bin_container = graph.selectAll("g")
+          .data(bins);
+
+        bin_container.enter().append("g")
+          // .attr("transform", function(d) { return "translate(" + (x(d.x0)+(x(d.x1)-x(d.x0))/2) + "," + y(data.length) + ")"; });
+
+        // JOIN new data with old elements.
+        var dots = bin_container.selectAll("circle")
+          .data(function(d) {
+            return d.map(function(data, i){return {"idx": i, "xpos": timeScale(d.x0)+(timeScale(d.x1)-timeScale(d.x0))/2};})
+            });
+
+        // EXIT old elements not present in new data.
+        dots.exit()
+            .attr("class", "exit");
+
+        // UPDATE old elements present in new data.
+        dots.attr("class", "update");
+
+        // ENTER new elements present in new data.
+        // var cdots = dots.enter().append("circle")
+        dots.enter().append("circle")
+          .attr("class", "enter")
+          .attr("cx", function (d) {return d.xpos;})
+          // .attr("cy", 0)
+          .attr("cy", function(d) {
+              return fatalitiesScale(d.idx)-radius; })
+          // .attr("r", function(d) { return (d.length==0) ? 0 : radius; })
+          .attr("r", 0)
+          //.style("fill", "steelblue")
+          .merge(dots)
+          .on("mouseover", function(d) {
+              d3.select(this)
+                .style("fill", "red");
+            })
+            .on("mouseout", function(d) {
+              d3.select(this)
+                  .style("fill", "steelblue");
+                tooltip.transition()
+                     .duration(500)
+                     .style("opacity", 0);
+            })
+          .transition()
+            .duration(500)
+            .attr("r", function(d) {
+            return (d.length==0) ? 0 : radius; });
+          // .style("fill", "black");;
 
     });
 
@@ -207,5 +277,5 @@ Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 
 Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-Dot plot histogram: https://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
+Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
