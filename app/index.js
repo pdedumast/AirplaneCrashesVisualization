@@ -60,8 +60,10 @@ function Map(){
     // Attributes
     this.tooltip
     this.zoom
+
     let canvas;
     let context;
+
     let custom;
     let svg;
     let g;
@@ -75,11 +77,15 @@ function Map(){
 
       var customBase = document.createElement('custom');
 	    custom = d3.select(customBase); // replacement of SVG
+      // canvas test
 
       canvas = d3.select("body").append("canvas")
           .attr("width", width)
           .attr("height", height)
           .on("click", stopped, true);
+      context = canvas.node().getContext("2d");
+
+      //  end canvas test
 
         svg = d3.select("body")
             .append("svg")
@@ -88,7 +94,7 @@ function Map(){
             .attr("height", height)
             .on("click", stopped, true);
 
-        context = canvas.node().getContext("2d");
+
 
         svg.append("rect")
             .attr("class", "background")
@@ -216,23 +222,17 @@ function Map(){
 
     this.drawCrashes = function(data){
 
-      d3.select('body')
-        .append('canvas')
-        .attr('width', map.width)
-        .attr('height', map.height)
-        .node().getContext('2d');
-
-
-        g.append("canvas")
-        .selectAll("circle")
+        g.selectAll("circle")
             .data(data)
             .enter()
             .append("circle")
-            .attr("cx", d => d.lng)
+            //.attr("cx", d => d.lng)
             //d => projection([d.lng, d.lat])[0])
-            .attr("cy",d=> d.lat )
+            //.attr("cy",d=> d.lat )
             //d => projection([d.lng, d.lat])[1])
-            .attr("r", "3px")
+            //.attr("r", "3px")
+            .attr("r", 3)
+            .attr("transform", function(d) {return "translate(" + projection([d.lng, d.lat]) + ")"})
             .style("fill", "red")
             .style("opacity", 0.7);
             /*.on("click", function(d){
@@ -271,8 +271,9 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     // Show crashes on the map
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
-    //map.drawCrashes(data);
     map.drawTest(data);
+    map.drawCrashes(data);
+
 
 
      // Define scales DOMAIN
