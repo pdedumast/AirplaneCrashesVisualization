@@ -3,6 +3,7 @@ const width = 1000;
 const height = 500;
 const padding = 50;
 
+
 let map;
 let tooltip;
 
@@ -14,11 +15,11 @@ map.setUp();
 /* *************************************************** */
 // Functions to manage zooming and dragging on the map
 
-
 // If the drag behavior prevents the default click,
 // also stop propagation so we don’t click-to-zoom.
 function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
+    tooltip.style("display", "none");
 }
 /* **************************************************** */
 
@@ -46,9 +47,9 @@ let graph = d3.select("body")
             .attr("height", height/3);
 
 // Define scales range
-let timeScale = d3.scaleLinear().range([padding, width - padding]);
-let fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
-
+let timeScale       =   d3.scaleTime().range([ padding, width - padding ]);
+let fatalitiesScale =   d3.scaleLinear().range([ 0.5 , 3 ]);
+let crashesScale    =   d3.scaleLinear().range([ height/3 - padding, padding ]);
 
 
 function Map(){
@@ -131,7 +132,8 @@ function Map(){
             .append("circle")
             .attr("cx", d => projection([d.lng, d.lat])[0])
             .attr("cy", d => projection([d.lng, d.lat])[1])
-            .attr("r", d => 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 70)
+            .attr("r", d => 3)
+                  //fatalitiesScale(d.Fatalities))
             .style("fill", "red")
             .style("opacity", 0.7)
     }
@@ -156,13 +158,24 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
 
      // Define scales DOMAIN
-    const date_min = new Date( d3.min(data, d => d["Date"]));
-    const date_max = new Date( d3.max(data, d => d["Date"]));
+    const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
+    const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
     date_max.setFullYear(date_max.getFullYear()+1);
     timeScale.domain( [date_min, date_max]);
 
+
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
-    fatalitiesScale.domain( [ 0, fatalities_max ]);
+    fatalitiesScale.domain( [ 0, fatalities_max ]);        
+
+    crashesGroupByYear = d3.nest()
+    .key( function(d){
+        return new Date(d.Date).getFullYear() })
+    .rollup(function(d) { 
+        return d3.sum(d, function() { return 1; });
+    }).entries(data)
+
+    const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; }); 
+    crashesScale.domain([0, crashes_max ]);
 
 
     // Define tooltip for crash markers
@@ -184,7 +197,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .selectAll(".tick")
         .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
 
-    const yAxis = d3.axisLeft( fatalitiesScale )
+    const yAxis = d3.axisLeft( crashesScale )
                     .ticks( 5 );
     graph.append("g")
         .attr("class", "axis")
