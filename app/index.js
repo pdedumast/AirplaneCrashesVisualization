@@ -2,6 +2,7 @@
 const width = 1000;
 const height = 500;
 const padding = 50;
+var margin = {top: 10, right: 30, bottom: 30, left: 30};
 
 
 let map;
@@ -58,8 +59,8 @@ function Map(){
     this.country
     this.tooltip
     this.zoom
-    
-    
+
+
     // Constructor
     this.setUp = function(){
         this.map = d3.select("body")
@@ -68,50 +69,50 @@ function Map(){
             .attr("width", width)
             .attr("height", height)
             .on("click", stopped, true);
-        
+
         this.map.append("rect")
             .attr("class", "background")
             .attr("width", width)
             .attr("height", height);
             //.on("click", this.reset);
-        
+
         this.country = this.map.append("g").attr('class','kinder');
-        
-                
-        
-        
+
+
+
+
         //this.map.call(zoom);
         zoom = d3.zoom()
             .scaleExtent([1, 8])
             .on("zoom", map.zoomed2);
         this.map.call(zoom)
-            
 
-        
+
+
         //this.map.call(this.zoom);
-        
+
         console.log("inside map");
     }
-    
+
     this.zoomed2 = function(element) {
         //d3.select(".map").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         d3.selectAll(".kinder").style("stroke-width", 1.5 / d3.event.transform.k + "px");
         d3.selectAll(".kinder").attr("transform", d3.event.transform); // updated for d3 v4
     }
-    
+
     // Interal functions
     function reset(that) {
-        
+
         const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed(this));
-        
+
         console.log("inside reset")
         console.log(that.zoom)
         that.map.transition()
             .duration(750)
             .call( zoom.transform, d3.zoomIdentity );
     }
-        
-    
+
+
     // Functions
     this.drawMap = function(json){
         this.country.selectAll("path")
@@ -124,7 +125,7 @@ function Map(){
                 .style('stroke-width', '0.4')
                 .on("click", reset);
     }
-    
+
     this.drawCrashes = function(data){
         this.country.selectAll("circle")
             .data(data)
@@ -135,7 +136,22 @@ function Map(){
             .attr("r", d => 3)
                   //fatalitiesScale(d.Fatalities))
             .style("fill", "red")
-            .style("opacity", 0.7)
+            .style("opacity", 0.7);
+            /*.on("click", function(d){
+                tooltip
+                    .style("left", d3.event.pageX + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("display", "inline-block")
+                    .html( (d.Date) + "<br>"
+                        + (d.Location) + "<br>"
+                        + "Operator : " + (d.Operator) + "<br>"
+                        + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard))
+                    .on("click", function(d){
+                        tooltip.style("display", "none");
+                    });
+
+        })
+        */
     }
 }
 
@@ -146,7 +162,7 @@ d3.json("/world.geo.json-master/countries.geo.json", function(error, json) {
     if (error) throw error;
     //Bind data and create one path per GeoJSON feature
     map.drawMap(json);
-    
+
 })
 
 
@@ -165,16 +181,16 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
 
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
-    fatalitiesScale.domain( [ 0, fatalities_max ]);        
+    fatalitiesScale.domain( [ 0, fatalities_max ]);
 
     crashesGroupByYear = d3.nest()
     .key( function(d){
         return new Date(d.Date).getFullYear() })
-    .rollup(function(d) { 
+    .rollup(function(d) {
         return d3.sum(d, function() { return 1; });
     }).entries(data)
 
-    const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; }); 
+    const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
     crashesScale.domain([0, crashes_max ]);
 
 
@@ -247,4 +263,5 @@ Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 
 Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
+Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
