@@ -1,9 +1,16 @@
 //Width and height
-const width = 1000;
+const width = 960;
 const height = 500;
 const padding = 50;
-var margin = {top: 10, right: 30, bottom: 30, left: 30};
+const margin = {top: 10, right: 30, bottom: 30, left: 30};
 
+const active = d3.select(null);
+
+
+//Define map projection
+var projection = d3.geoNaturalEarth1() // updated for d3 v4
+    .scale(200)
+    .translate([width / 2, height / 2]);
 
 let map;
 let tooltip;
@@ -26,10 +33,6 @@ function stopped() {
 
 
 
-//Define map projection
-let projection = d3.geoMercator()
-                    .translate([width/2, height/2])
-                    .scale([120]);
 
 //overwrite projection for tests
 projection = d3.geoNaturalEarth1();
@@ -55,31 +58,54 @@ let crashesScale    =   d3.scaleLinear().range([ height/3 - padding, padding ]);
 
 function Map(){
     // Attributes
-    this.map
-    this.country
     this.tooltip
     this.zoom
+    let canvas;
+    let context;
+    let custom;
+    let svg;
+    let g;
+    let active = d3.select(null);
+
 
 
     // Constructor
     this.setUp = function(){
-        this.map = d3.select("body")
+
+
+      var customBase = document.createElement('custom');
+	    custom = d3.select(customBase); // replacement of SVG
+
+      canvas = d3.select("body").append("canvas")
+          .attr("width", width)
+          .attr("height", height)
+          .on("click", stopped, true);
+
+        svg = d3.select("body")
             .append("svg")
             .attr("class","map")
             .attr("width", width)
             .attr("height", height)
             .on("click", stopped, true);
 
-        this.map.append("rect")
+        context = canvas.node().getContext("2d");
+
+        svg.append("rect")
             .attr("class", "background")
             .attr("width", width)
             .attr("height", height);
             //.on("click", this.reset);
 
-        this.country = this.map.append("g").attr('class','kinder');
+        g = svg.append("g");
+
+        zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", zoomed);
 
 
+        svg.call(zoom);
 
+        /*this.country = this.map.append("g").attr('class','kinder');
 
         //this.map.call(zoom);
         zoom = d3.zoom()
@@ -87,17 +113,14 @@ function Map(){
             .on("zoom", map.zoomed2);
         this.map.call(zoom)
 
-
-
-        //this.map.call(this.zoom);
+        //this.map.call(this.zoom);*/
 
         console.log("inside map");
     }
 
-    this.zoomed2 = function(element) {
-        //d3.select(".map").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-        d3.selectAll(".kinder").style("stroke-width", 1.5 / d3.event.transform.k + "px");
-        d3.selectAll(".kinder").attr("transform", d3.event.transform); // updated for d3 v4
+    function zoomed() {
+        g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+        g.attr("transform", d3.event.transform); // updated for d3 v4
     }
 
     // Interal functions
@@ -111,29 +134,105 @@ function Map(){
             .duration(750)
             .call( zoom.transform, d3.zoomIdentity );
     }
+    function reset() {
+      active.classed("active", false);
+      active = d3.select(null);
+
+      svg.transition()
+          .duration(750)
+          // .call( zoom.transform, d3.zoomIdentity.translate(0, 0).scale(1) ); // not in d3 v4
+          .call( zoom.transform, d3.zoomIdentity ); // updated for d3 v4
+    }
+    function zoomed() {
+      g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+      // g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")"); // not in d3 v4
+      g.attr("transform", d3.event.transform); // updated for d3 v4
+    }
+
+    function clicked(d) {
+      if (active.node() === this) return reset();
+      active.classed("active", false);
+      active = d3.select(this).classed("active", true);
+
+      var bounds = path.bounds(d),
+          dx = bounds[1][0] - bounds[0][0],
+          dy = bounds[1][1] - bounds[0][1],
+          x = (bounds[0][0] + bounds[1][0]) / 2,
+          y = (bounds[0][1] + bounds[1][1]) / 2,
+          scale = Math.max(1, Math.min(8, 0.9 / Math.max(dx / width, dy / height))),
+          translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+      svg.transition()
+          .duration(750)
+          // .call(zoom.translate(translate).scale(scale).event); // not in d3 v4
+          .call( zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale) ); // updated for d3 v4
+    }
 
 
     // Functions
-    this.drawMap = function(json){
-        this.country.selectAll("path")
-                .data(json.features)
-                .enter()
-                .append("path")
-                .attr("d", path)
-                .style("fill", "#fcda94")
-                .style('stroke', '#fcbf94')
-                .style('stroke-width', '0.4')
-                .on("click", reset);
+    this.drawTest = function(data){
+  		context.clearRect(0, 0, width, height);
+
+      var join = custom.selectAll('custon.circle').data(data);
+
+      var enterSel = join.enter()
+			.append('custom')
+			.attr('class', 'circle')
+			.attr('x', function(d,i){
+				return projection([d.lng, d.lat])[0];
+			})
+			.attr('y', function(d,i){
+				return projection([d.lng, d.lat])[1];
+			})
+			.attr('r', function(d,i){
+				return 3;
+			});
+
+  		var elements = custom.selectAll('custom.circle');
+  		elements.each(function(d,i){
+  			var node = d3.select(this);
+  			context.fillStyle = 'steelblue';
+  			context.beginPath();
+  			context.arc(node.attr('x'), node.attr('y'), node.attr('r'), 0, 2*Math.PI);
+  			context.fill();
+  		})
+    }
+
+    this.drawMap = function(data){
+
+      g.selectAll("path")
+          .data(topojson.feature(data, data.objects.countries).features)
+        .enter().append("path")
+          .attr("d", path)
+          .attr("class", "feature")
+          .on("click", clicked);
+
+      g.append("path")
+          .datum(topojson.mesh(data, data.objects.countries, function(a, b) { return a !== b; }))
+          .attr("class", "mesh")
+          .attr("d", path);
+
     }
 
     this.drawCrashes = function(data){
-        this.country.selectAll("circle")
+
+      d3.select('body')
+        .append('canvas')
+        .attr('width', map.width)
+        .attr('height', map.height)
+        .node().getContext('2d');
+
+
+        g.append("canvas")
+        .selectAll("circle")
             .data(data)
             .enter()
             .append("circle")
-            .attr("cx", d => projection([d.lng, d.lat])[0])
-            .attr("cy", d => projection([d.lng, d.lat])[1])
-            .attr("r", d => fatalitiesScale(d.Fatalities))
+            .attr("cx", d => d.lng)
+            //d => projection([d.lng, d.lat])[0])
+            .attr("cy",d=> d.lat )
+            //d => projection([d.lng, d.lat])[1])
+            .attr("r", "3px")
             .style("fill", "red")
             .style("opacity", 0.7);
             /*.on("click", function(d){
@@ -157,7 +256,7 @@ function Map(){
 /* **************************************************** */
 
 //Load in GeoJSON data
-d3.json("/world.geo.json-master/countries.geo.json", function(error, json) {
+d3.json("../world.geo.json-master/test2.json", function(error, json) {
     if (error) throw error;
     //Bind data and create one path per GeoJSON feature
     map.drawMap(json);
@@ -168,11 +267,12 @@ d3.json("/world.geo.json-master/countries.geo.json", function(error, json) {
 //Load airplane crashes data
 d3.csv("/data/aircrashes1.csv", function(error, data) {
     if (error) throw error;
-    
+
     // Show crashes on the map
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
-    map.drawCrashes(data);
+    //map.drawCrashes(data);
+    map.drawTest(data);
 
 
      // Define scales DOMAIN
@@ -180,7 +280,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
     date_max.setFullYear(date_max.getFullYear()+1);
     timeScale.domain( [date_min, date_max]);
-   
+
     crashesGroupByYear = d3.nest()
     .key( function(d){
         return new Date(d.Date).getFullYear() })
@@ -190,7 +290,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
     const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
     crashesScale.domain([0, crashes_max ]);
-    
+
     // Define tooltip for crash markers
     tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
@@ -223,8 +323,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
             .extent([[padding, 0], [width - padding, height/3 + padding]])
             .on("end", brushended));
 
-    
-    
+
+
     // Filter by year
     console.log("avant data_by_year");
 
@@ -242,7 +342,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
       crashesByYear[i] = {'Year': current_year,
                           'Crashes': num_crashes};
     }
-    
+
     graph.append("g")
       .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
@@ -318,7 +418,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
       // .style("fill", "black");;
 
 
-  
+
 });
 
 function brushended() {
