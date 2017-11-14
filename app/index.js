@@ -190,8 +190,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
     const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
     crashesScale.domain([0, crashes_max ]);
-
-
+    
     // Define tooltip for crash markers
     tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
@@ -224,23 +223,102 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
             .extent([[padding, 0], [width - padding, height/3 + padding]])
             .on("end", brushended));
 
+    
+    
     // Filter by year
     console.log("avant data_by_year");
 
-    // Create list of kept years
-    const list_years = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
-    my_list_years = list_years(2010, 2015)
-    console.log(my_list_years);
+    // Create list of selected years
+    const integerList = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
+    listYears = integerList(date_min.getFullYear(), date_max.getFullYear())
+    console.log(listYears);
 
     // Keep only selected years
-    const nested_data = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
+    let crashesByYear = [listYears.length];
+    for (var i = 0; i < listYears.length; i++) {
+      const current_year = listYears[i];
+      let num_crashes = data.filter((elem) => new Date(elem.Date).getFullYear() == current_year).length;
 
-    // Sum fatalities over the years
-    const nested_data_year =  nested_data.map
-    console.log(new Date(nested_data[0].Date));
+      crashesByYear[i] = {'Year': current_year,
+                          'Crashes': num_crashes};
+    }
+    
+    graph.append("g")
+      .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
 
-    console.log("après data_by_year");
+    // Set up the binning parameters for the histogram
+    var nbins = crashesByYear.length;
 
+    var histogram = d3.histogram()
+      .domain(timeScale.domain())
+      // Freedman–Diaconis rule
+      // .thresholds(d3.thresholdFreedmanDiaconis(data.map(function (d){ return d.Value}),
+      //                                          Math.min.apply(null, data.map(function (d){ return d.Value})),
+      //                                          Math.max.apply(null, data.map(function (d){ return d.Value}))))
+      .thresholds(timeScale.ticks(nbins))
+      .value(function(d) { return d.Crashes;} )
+
+    // Compute the histogram
+    var bins = histogram(crashesByYear);
+
+    console.log(bins);
+
+    // radius dependent of data length
+    var radius = fatalitiesScale(crashesByYear.length - 1)/2;
+    console.log("RADIUS " + radius);
+
+    // bins objects
+    var bin_container = graph.selectAll("g")
+      .data(bins);
+
+    bin_container.enter().append("g")
+      // .attr("transform", function(d) { return "translate(" + (x(d.x0)+(x(d.x1)-x(d.x0))/2) + "," + y(data.length) + ")"; });
+
+    // JOIN new data with old elements.
+    var dots = bin_container.selectAll("circle")
+      .data(function(d) {
+        return d.map(function(data, i){return {"idx": i, "xpos": timeScale(d.x0)+(timeScale(d.x1)-timeScale(d.x0))/2};})
+        });
+
+    // EXIT old elements not present in new data.
+    dots.exit()
+        .attr("class", "exit");
+
+    // UPDATE old elements present in new data.
+    dots.attr("class", "update");
+
+    // ENTER new elements present in new data.
+    // var cdots = dots.enter().append("circle")
+    dots.enter().append("circle")
+      .attr("class", "enter")
+      .attr("cx", function (d) {return d.xpos;})
+      // .attr("cy", 0)
+      .attr("cy", function(d) {
+          return fatalitiesScale(d.idx)-radius; })
+      // .attr("r", function(d) { return (d.length==0) ? 0 : radius; })
+      .attr("r", 0)
+      //.style("fill", "steelblue")
+      .merge(dots)
+      .on("mouseover", function(d) {
+          d3.select(this)
+            .style("fill", "red");
+        })
+        .on("mouseout", function(d) {
+          d3.select(this)
+              .style("fill", "steelblue");
+            tooltip.transition()
+                 .duration(500)
+                 .style("opacity", 0);
+        })
+      .transition()
+        .duration(500)
+        .attr("r", function(d) {
+        return (d.length==0) ? 0 : radius; });
+      // .style("fill", "black");;
+
+
+  
 });
 
 function brushended() {
