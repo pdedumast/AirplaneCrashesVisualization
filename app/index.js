@@ -120,14 +120,16 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
             .style("opacity", 0.7)
             .on("click", function(d){
                 tooltip
-                  .style("left", d3.event.pageX + "px")
-                  .style("top", d3.event.pageY + "px")
-                  .style("display", "inline-block")
-
-                  .html( (d.Date) + "<br>"
+                    .style("left", d3.event.pageX + "px")
+                    .style("top", d3.event.pageY + "px")
+                    .style("display", "inline-block")
+                    .html( (d.Date) + "<br>"
                         + (d.Location) + "<br>"
                         + "Operator : " + (d.Operator) + "<br>"
-                        + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard));
+                        + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard))
+                    .on("click", function(d){
+                        tooltip.style("display", "none");
+                    });
         })
 
 
