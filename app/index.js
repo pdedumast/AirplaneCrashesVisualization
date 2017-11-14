@@ -3,7 +3,6 @@ const width = 1000;
 const height = 500;
 const padding = 50;
 
-console.log("Mathmout est dans sa douche !!");
 let tooltip
 
 /* *************************************************** */
@@ -66,7 +65,7 @@ let graph = d3.select("body")
             .attr("height", height/3);
 
 // Define scales range
-let timeScale = d3.scaleLinear().range([padding, width - padding]);
+let timeScale = d3.scaleTime().range([padding, width - padding]);
 let fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
 
 
@@ -88,8 +87,8 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
     d3.csv("/data/aircrashes1.csv", function(data) {
 
          // Define scales DOMAIN
-        const date_min = new Date( d3.min(data, d => d["Date"]));
-        const date_max = new Date( d3.max(data, d => d["Date"]));
+        const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
+        const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
         date_max.setFullYear(date_max.getFullYear()+1);
         timeScale.domain( [date_min, date_max]);
 
