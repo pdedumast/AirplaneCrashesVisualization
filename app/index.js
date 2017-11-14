@@ -65,9 +65,9 @@ let graph = d3.select("body")
             .attr("height", height/3);
 
 // Define scales range
-let timeScale = d3.scaleTime().range([padding, width - padding]);
-let fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
-
+let timeScale       =   d3.scaleTime().range([ padding, width - padding ]);
+let fatalitiesScale =   d3.scaleLinear().range([ 0.5 , 3 ]);
+let crashesScale    =   d3.scaleLinear().range([ height/3 - padding, padding ]);
 
 //Load in GeoJSON data
 d3.json("/world.geo.json-master/countries.geo.json", function(json) {
@@ -93,8 +93,18 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         timeScale.domain( [date_min, date_max]);
 
         const fatalities_max = d3.max(data, d => d["Fatalities"]);
-        fatalitiesScale.domain( [ 0, fatalities_max ]);
-
+        fatalitiesScale.domain( [ 0, fatalities_max ]);        
+        
+        crashesGroupByYear = d3.nest()
+        .key( function(d){
+            return new Date(d.Date).getFullYear() })
+        .rollup(function(d) { 
+            return d3.sum(d, function() { return 1; });
+        }).entries(data)
+        
+        const crashes_min = d3.min(crashesGroupByYear, function(d) { return d.value; });
+        const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; }); 
+        crashesScale.domain([0, crashes_max ]);
 
         // Define tooltip for crashes market
         tooltip = d3.select("body").append("div").attr("class", "toolTip");
@@ -113,7 +123,7 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
                 return projection([d.lng, d.lat])[1];
             })
             .attr("r", function(d) {
-                return 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 70;
+                return fatalitiesScale( d.Fatalities );
             })
             .style("fill", "red")
             .style("opacity", 0.7)
@@ -147,8 +157,8 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
             .selectAll(".tick")
             .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
 
-        const yAxis = d3.axisLeft( fatalitiesScale )
-				        .ticks( 5 );
+        const yAxis = d3.axisLeft( crashesScale )
+				        .ticks( crashes_max / 20 );
         graph.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(" + padding + ",0)")
@@ -173,8 +183,6 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         // Sum fatalities over the years
         const nested_data_year =  data_selectedYears.map
         console.log(new Date(data_selectedYears[0].Date));
-
-        console.log("après data_by_year");
 
     });
 
