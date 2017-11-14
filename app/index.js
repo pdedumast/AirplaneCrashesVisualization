@@ -4,28 +4,16 @@ const height = 500;
 const padding = 50;
 
 let map;
-let country;
 let tooltip;
 
 
 
+
+map = new Map();
+map.setUp();
 /* *************************************************** */
 // Functions to manage zooming and dragging on the map
-function reset() {
-  map.transition()
-      .duration(750)
-      .call( zoom.transform, d3.zoomIdentity );
-}
 
-function zoomed() {
-    country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
-    country.attr("transform", d3.event.transform);
-    map.selectAll("circle").attr("transform", d3.event.transform);
-}
-
-let zoom = d3.zoom()
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed);
 
 // If the drag behavior prevents the default click,
 // also stop propagation so we don’t click-to-zoom.
@@ -34,8 +22,7 @@ function stopped() {
 }
 /* **************************************************** */
 
-map = new Map();
-map.setUp();
+
 
 //Define map projection
 let projection = d3.geoMercator()
@@ -63,16 +50,20 @@ let timeScale = d3.scaleLinear().range([padding, width - padding]);
 let fatalitiesScale = d3.scaleLinear().range([ height/3 - padding, 0 ]);
 
 
+
 function Map(){
     // Attributes
     this.map
     this.country
+    this.tooltip
+    this.zoom
     
-    // Functions
+    
+    // Constructor
     this.setUp = function(){
-        
         this.map = d3.select("body")
             .append("svg")
+            .attr("class","map")
             .attr("width", width)
             .attr("height", height)
             .on("click", stopped, true);
@@ -80,15 +71,47 @@ function Map(){
         this.map.append("rect")
             .attr("class", "background")
             .attr("width", width)
-            .attr("height", height)
-            .on("click", reset);
+            .attr("height", height);
+            //.on("click", this.reset);
         
-        this.map.call(zoom);
+        this.country = this.map.append("g").attr('class','kinder');
         
-        this.country = this.map.append("g");
+                
+        
+        
+        //this.map.call(zoom);
+        zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", map.zoomed2);
+        this.map.call(zoom)
+            
+
+        
+        //this.map.call(this.zoom);
         
         console.log("inside map");
     }
+    
+    this.zoomed2 = function(element) {
+        //d3.select(".map").attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        d3.selectAll(".kinder").style("stroke-width", 1.5 / d3.event.transform.k + "px");
+        d3.selectAll(".kinder").attr("transform", d3.event.transform); // updated for d3 v4
+    }
+    
+    // Interal functions
+    function reset(that) {
+        
+        const zoom = d3.zoom().scaleExtent([1, 8]).on("zoom", zoomed(this));
+        
+        console.log("inside reset")
+        console.log(that.zoom)
+        that.map.transition()
+            .duration(750)
+            .call( zoom.transform, d3.zoomIdentity );
+    }
+        
+    
+    // Functions
     this.drawMap = function(json){
         this.country.selectAll("path")
                 .data(json.features)
@@ -102,54 +125,19 @@ function Map(){
     }
     
     this.drawCrashes = function(data){
-        this.map.selectAll("circle")
+        this.country.selectAll("circle")
             .data(data)
             .enter()
             .append("circle")
-            .attr("cx", function(d) {
-                return projection([d.lng, d.lat])[0];
-            })
-            .attr("cy", function(d) {
-                return projection([d.lng, d.lat])[1];
-            })
-            .attr("r", function(d) {
-                return 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 70;
-            })
+            .attr("cx", d => projection([d.lng, d.lat])[0])
+            .attr("cy", d => projection([d.lng, d.lat])[1])
+            .attr("r", d => 0.5 + fatalitiesScale.invert( fatalitiesScale( d.Fatalities) ) / 70)
             .style("fill", "red")
             .style("opacity", 0.7)
-            .on("click", function(d){
-                tooltip
-                    .style("left", d3.event.pageX + "px")
-                    .style("top", d3.event.pageY + "px")
-                    .style("display", "inline-block")
-                    .html( (d.Date) + "<br>"
-                        + (d.Location) + "<br>"
-                        + "Operator : " + (d.Operator) + "<br>"
-                        + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard))
-                    .on("click", function(d){
-                        tooltip.style("display", "none");
-                });
-        })
     }
 }
 
-
 /* **************************************************** */
-function drawMap(json){
-    country.selectAll("path")
-        .data(json.features)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .style("fill", "#fcda94")
-        .style('stroke', '#fcbf94')
-        .style('stroke-width', '0.4')
-        .on("click", reset);
-}
-
-function drawCrashes(data){
-    
-}
 
 //Load in GeoJSON data
 d3.json("/world.geo.json-master/countries.geo.json", function(error, json) {
