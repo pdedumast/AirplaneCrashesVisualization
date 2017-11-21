@@ -280,7 +280,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
     date_max.setFullYear(date_max.getFullYear()+1);
-    timeScale.domain( [date_min, date_max]);
+    timeScale.domain( [date_min.getFullYear(), date_max.getFullYear()]);
 
     crashesGroupByYear = d3.nest()
     .key( function(d){
@@ -325,14 +325,15 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
             .on("end", brushended));
 
 
+    /***** Work on graph dot histogram *****/
 
+    // 1. Prepare data for Graph
     // Filter by year
     console.log("avant data_by_year");
 
     // Create list of selected years
     const integerList = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
     listYears = integerList(date_min.getFullYear(), date_max.getFullYear())
-    console.log(listYears);
 
     // Keep only selected years
     let crashesByYear = [listYears.length];
@@ -340,84 +341,26 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
       const current_year = listYears[i];
       let num_crashes = data.filter((elem) => new Date(elem.Date).getFullYear() == current_year).length;
 
-      crashesByYear[i] = {'Year': current_year,
-                          'Crashes': num_crashes};
+      crashesByYear[i] = [current_year, num_crashes];
     }
+    console.log(crashesByYear);
 
-    graph.append("g")
-      .attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+    // 2. Display
+    console.log("je vais display des petits cercles");
+    graph.selectAll("circle")  // <-- No longer "rect"
+         .data(crashesByYear)
+         .enter()
+         .append("circle")
+         .attr("cx", function(d) {
+                        console.log(d[0], timeScale(d[0]));
+                        return timeScale(d[0]);
+         })
+         .attr("cy", function(d) {
+                        return crashesScale(d[1]);
+         })
+        .attr("r", 5);
 
-    // Set up the binning parameters for the histogram
-    var nbins = crashesByYear.length;
-
-    var histogram = d3.histogram()
-      .domain(timeScale.domain())
-      // Freedman–Diaconis rule
-      // .thresholds(d3.thresholdFreedmanDiaconis(data.map(function (d){ return d.Value}),
-      //                                          Math.min.apply(null, data.map(function (d){ return d.Value})),
-      //                                          Math.max.apply(null, data.map(function (d){ return d.Value}))))
-      .thresholds(timeScale.ticks(nbins))
-      .value(function(d) { return d.Crashes;} )
-
-    // Compute the histogram
-    var bins = histogram(crashesByYear);
-
-    console.log(bins);
-
-    // radius dependent of data length
-    var radius = fatalitiesScale(crashesByYear.length - 1)/2;
-    console.log("RADIUS " + radius);
-
-    // bins objects
-    var bin_container = graph.selectAll("g")
-      .data(bins);
-
-    bin_container.enter().append("g")
-      // .attr("transform", function(d) { return "translate(" + (x(d.x0)+(x(d.x1)-x(d.x0))/2) + "," + y(data.length) + ")"; });
-
-    // JOIN new data with old elements.
-    var dots = bin_container.selectAll("circle")
-      .data(function(d) {
-        return d.map(function(data, i){return {"idx": i, "xpos": timeScale(d.x0)+(timeScale(d.x1)-timeScale(d.x0))/2};})
-        });
-
-    // EXIT old elements not present in new data.
-    dots.exit()
-        .attr("class", "exit");
-
-    // UPDATE old elements present in new data.
-    dots.attr("class", "update");
-
-    // ENTER new elements present in new data.
-    // var cdots = dots.enter().append("circle")
-    dots.enter().append("circle")
-      .attr("class", "enter")
-      .attr("cx", function (d) {return d.xpos;})
-      // .attr("cy", 0)
-      .attr("cy", function(d) {
-          return fatalitiesScale(d.idx)-radius; })
-      // .attr("r", function(d) { return (d.length==0) ? 0 : radius; })
-      .attr("r", 0)
-      //.style("fill", "steelblue")
-      .merge(dots)
-      .on("mouseover", function(d) {
-          d3.select(this)
-            .style("fill", "red");
-        })
-        .on("mouseout", function(d) {
-          d3.select(this)
-              .style("fill", "steelblue");
-            tooltip.transition()
-                 .duration(500)
-                 .style("opacity", 0);
-        })
-      .transition()
-        .duration(500)
-        .attr("r", function(d) {
-        return (d.length==0) ? 0 : radius; });
-      // .style("fill", "black");;
-
+    console.log("j'ai display des petits cercles");
 
 
 });
