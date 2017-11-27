@@ -172,7 +172,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
             .call(d3.brushX()
             .extent([[padding, 0], [width - padding, height/3 + padding]])
             
-            .on("brush", brushended));
+            .on("brush", hightlightCircles))
+            .on("end", filterCrashes); ;
 
 
     /***** Work on graph dot histogram *****/
@@ -191,33 +192,37 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
                         .attr("r", 5)   
                         .attr("class", "non_brushed");
 
-     function isBrushed(brush_coords, cx, cy) {
+    function isBrushed(brush_coords, cx, cy) {
 
-     let x0 = brush_coords[0],
-         x1 = brush_coords[1];
+         let x0 = brush_coords[0],
+             x1 = brush_coords[1];
 
-    return x0 <= cx && cx <= x1;
-}
+        return x0 <= cx && cx <= x1;
+    }
 
 
-function brushended() {
-  // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-  // Get year range selected
+    function hightlightCircles() {
+        // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+        // Get year range selected
+
+        var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
+        console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
+
+
+        brush_coords = d3.brushSelection(this);
+        circles.attr("class", "non_brushed");
+        circles.filter(function (){
+                   var cx = d3.select(this).attr("cx"),
+                       cy = d3.select(this).attr("cy");
+
+                   return isBrushed(brush_coords, cx, cy);
+               })
+               .attr("class", "brushed");
+    }
     
-  var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
-  console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
-    
-
-    brush_coords = d3.brushSelection(this);
-    circles.attr("class", "non_brushed");
-    circles.filter(function (){
-               var cx = d3.select(this).attr("cx"),
-                   cy = d3.select(this).attr("cy");
-
-               return isBrushed(brush_coords, cx, cy);
-           })
-           .attr("class", "brushed");
-}
+    function filterCrashes (){
+        
+    }
 
     
     
