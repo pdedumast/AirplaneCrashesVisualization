@@ -161,6 +161,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
     const yAxis = d3.axisLeft( crashesScale )
                     .ticks( 5 );
+
     graph.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(" + padding + ",0)")
@@ -170,33 +171,57 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
             .attr("class", "brush")
             .call(d3.brushX()
             .extent([[padding, 0], [width - padding, height/3 + padding]])
-            .on("end", brushended));
+            
+            .on("brush", brushended));
 
 
     /***** Work on graph dot histogram *****/
 
-
-    console.log(crashesGroupByYear)
     // 2. Display
-    graph.selectAll("circle")
-         .data(crashesGroupByYear)
-         .enter()
-         .append("circle")
-         .attr("cx", function(d) {
-            return timeScale( new Date( d.key, 1, 1 ) );
-         })
-         .attr("cy", function(d) {
-            return crashesScale( d.value );
-         })
-        .attr("r", 5);
-});
+    let circles = graph.selectAll("circle")
+                        .data(crashesGroupByYear)
+                        .enter()
+                        .append("circle")
+                        .attr("cx", function(d) {
+                            return timeScale( new Date( d.key, 1, 1 ) );
+                        })
+                        .attr("cy", function(d) {
+                            return crashesScale( d.value );
+                        })
+                        .attr("r", 5)   
+                        .attr("class", "non_brushed");
+
+     function isBrushed(brush_coords, cx, cy) {
+
+     let x0 = brush_coords[0],
+         x1 = brush_coords[1];
+
+    return x0 <= cx && cx <= x1;
+}
+
 
 function brushended() {
   // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
   // Get year range selected
+    
   var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
   console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
+    
+
+    brush_coords = d3.brushSelection(this);
+    circles.attr("class", "non_brushed");
+    circles.filter(function (){
+               var cx = d3.select(this).attr("cx"),
+                   cy = d3.select(this).attr("cy");
+
+               return isBrushed(brush_coords, cx, cy);
+           })
+           .attr("class", "brushed");
 }
+
+    
+    
+});
 
 
 
@@ -210,5 +235,6 @@ ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
 Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
+Color on brush : http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b
 Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
