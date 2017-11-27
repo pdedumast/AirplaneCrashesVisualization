@@ -109,6 +109,15 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     crashesScale.domain([0, crashes_max ]);
     
     
+    let currentRange;
+    let crashesRadius = function(d) { 
+        if(!currentRange || new Date( d["Date"] ).getFullYear() < currentRange[0] || new Date( d["Date"]).getFullYear() > currentRange[1] ) {
+            return 0;
+        } else {
+            return fatalitiesScale( d.Fatalities );
+        }
+    }
+
     // Show crashes on the map
     map.selectAll("circle")
         .data(data)
@@ -120,9 +129,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .attr("cy", function(d) {
             return projection([d.lng, d.lat])[1];
         })
-        .attr("r", function(d) {
-            return fatalitiesScale( d.Fatalities );
-        })
+        .attr("r", crashesRadius )
+        .attr("class", "crashes")
         .style("fill", "red")
         .style("opacity", 0.7)
         .on("click", function(d){
@@ -166,14 +174,17 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .attr("class", "axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
-
-    graph.append("g")
-            .attr("class", "brush")
-            .call(d3.brushX()
+    
+    let brush = d3.brushX()
             .extent([[padding, 0], [width - padding, height/3 + padding]])
             
-            .on("brush", hightlightCircles))
-            .on("end", filterCrashes); ;
+            .on("brush", hightlightCircles)
+            .on("end", filterCrashes);
+    
+    
+    graph.append("g")
+            .attr("class", "brush")
+            .call(brush);
 
 
     /***** Work on graph dot histogram *****/
@@ -202,13 +213,6 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
 
     function hightlightCircles() {
-        // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-        // Get year range selected
-
-        var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
-        console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
-
-
         brush_coords = d3.brushSelection(this);
         circles.attr("class", "non_brushed");
         circles.filter(function (){
@@ -222,6 +226,12 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     
     function filterCrashes (){
         
+        tooltip.style("display", "none");
+
+        let s = d3.event.selection || timeScale.range();
+        currentRange = (s.map(x => new Date(timeScale.invert(x)).getFullYear()));
+          map.selectAll(".crashes")
+           .attr("r", crashesRadius);
     }
 
     
@@ -239,7 +249,9 @@ Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
-Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-Color on brush : http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b
+Brush: 
+- https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
+- http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b (Color)
+- https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling (Filter )
 Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
