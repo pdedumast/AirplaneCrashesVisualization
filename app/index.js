@@ -200,7 +200,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
                         .attr("cy", function(d) {
                             return crashesScale( d.value );
                         })
-                        .attr("r", 5)   
+                        .attr("r", 4)   
                         .attr("class", "non_brushed");
 
     function isBrushed(brush_coords, cx, cy) {
