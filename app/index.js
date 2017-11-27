@@ -21,17 +21,14 @@ function zoomed() {
     map.selectAll("circle").attr("transform", d3.event.transform);
     tooltip.style("display", "none");
 }
-
-let zoom = d3.zoom()
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed);
 //Define map projection
 let projection = d3.geoNaturalEarth1()
     .scale(180)
     .translate([width / 2, height / 2]);
 
-/* *************************************************** */
-// Functions to manage zooming and dragging on the map
+let zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
 
 // If the drag behavior prevents the default click,
 // also stop propagation so we don’t click-to-zoom.
@@ -85,185 +82,101 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         .style('stroke', '#fcbf94')
         .style('stroke-width', '0.4')
         .on("click", reset);
+})
 
-    //Load airplane crashes data
-    d3.csv("/data/aircrashes1.csv", function(data) {
+//Load airplane crashes data
+d3.csv("/data/aircrashes1.csv", function(error, data) {
+    if (error) throw error;
+    
+    // Define scales DOMAIN
+    const fatalities_max = d3.max(data, d => d["Fatalities"]);
+    fatalitiesScale.domain( [ 0, fatalities_max ]);
+    
+    const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
+    const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
+    date_max.setFullYear(date_max.getFullYear()+1);
+    timeScale.domain( [date_min.getFullYear(), date_max.getFullYear()]);
 
-      
-        const fatalities_max = d3.max(data, d => d["Fatalities"]);
-        fatalitiesScale.domain( [ 0, fatalities_max ]);
+    let crashesGroupByYear = d3.nest()
+    .key( function(d){
+        return new Date(d.Date).getFullYear() })
+    .rollup(function(d) {
+        return d3.sum(d, function() { return 1; });
+    }).entries(data)
 
-        // Show crashes on the map
-        map.selectAll("circle")
-            .data(data)
-            .enter()
-            .append("circle")
-            .attr("cx", function(d) {
-                return projection([d.lng, d.lat])[0];
-            })
-            .attr("cy", function(d) {
-                return projection([d.lng, d.lat])[1];
-            })
-            .attr("r", function(d) {
-                return fatalitiesScale( d.Fatalities );
-            })
-            .style("fill", "red")
-            .style("opacity", 0.7)
-            .on("click", function(d){
-                tooltip
-                    .style("left", d3.event.pageX + "px")
-                    .style("top", d3.event.pageY + "px")
-                    .style("display", "inline-block")
-                    .html( (d.Date) + "<br>"
-                        + (d.Location) + "<br>"
-                        + "Operator : " + (d.Operator) + "<br>"
-                        + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard))
-                    .on("click", function(d){
-                        tooltip.style("display", "none");
-                    });
-            })
-
-
-         // Define scales domain
-        const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
-        const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
-        date_max.setFullYear(date_max.getFullYear()+1);
-        timeScale.domain( [date_min, date_max]);
-
-        crashesGroupByYear = d3.nest()
-        .key( function(d){
-            return new Date(d.Date).getFullYear() })
-        .rollup(function(d) {
-            return d3.sum(d, function() { return 1; });
-        }).entries(data)
-
-        const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
-        crashesScale.domain([0, crashes_max ]);
-
-        // Define tooltip for crash markers
-        tooltip = d3.select("body").append("div").attr("class", "toolTip");
-
-
-        // Draw axis
-        const xAxis = d3.axisBottom( timeScale )
-                        .tickFormat( d3.timeFormat("%Y") );
-        graph.append("g")
-            .attr("class", "axis axis--grid")
-            .attr("transform", "translate(0," + (height/3 - padding) + ")")
-            .call(xAxis)
-            .selectAll("text") // Rotate labels
-            .style("text-anchor", "end")
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", "rotate(-45)")
-            .selectAll(".tick")
-            .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
-
-        const yAxis = d3.axisLeft( crashesScale )
-				        .ticks( crashes_max / 20 );
-        graph.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + padding + ",0)")
-            .call(yAxis);
-
-        graph.append("g")
-                .attr("class", "brush")
-                .call(d3.brushX()
-                .extent([[padding, 0], [width - padding, height/3 + padding]])
-                .on("end", brushended));
-
-
-        // Create list of selected years
-        const integerList = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
-        listYears = integerList(date_min.getFullYear(), date_max.getFullYear())
-        console.log(listYears);
-
-        // Keep only selected years
-/*        let crashesByYear = [listYears.length];
-        for (var i = 0; i < listYears.length; i++) {
-          const current_year = listYears[i];
-          let num_crashes = data.filter((elem) => new Date(elem.Date).getFullYear() == current_year).length;
-
-          crashesByYear[i] = {'Year': current_year,
-                              'Crashes': num_crashes};
-        }*/
-
-        graph.append("g")
-          .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-        // Set up the binning parameters for the histogram
-        var nbins = crashesGroupByYear.length;
-
-        var histogram = d3.histogram()
-          .domain(timeScale.domain())
-          // Freedman–Diaconis rule
-          // .thresholds(d3.thresholdFreedmanDiaconis(data.map(function (d){ return d.Value}),
-          //                                          Math.min.apply(null, data.map(function (d){ return d.Value})),
-          //                                          Math.max.apply(null, data.map(function (d){ return d.Value}))))
-          .thresholds(timeScale.ticks(nbins))
-          .value(function(d) { return d.Crashes;} )
-
-        // Compute the histogram
-        var bins = histogram(crashesGroupByYear);
-
-        console.log(bins);
-
-        // radius dependent of data length
-        var radius = fatalitiesScale(crashesGroupByYear.length - 1)/2;
-        console.log("RADIUS " + radius);
-
-        // bins objects
-        var bin_container = graph.selectAll("g")
-          .data(bins);
-
-        bin_container.enter().append("g")
-          // .attr("transform", function(d) { return "translate(" + (x(d.x0)+(x(d.x1)-x(d.x0))/2) + "," + y(data.length) + ")"; });
-
-        // JOIN new data with old elements.
-        var dots = bin_container.selectAll("circle")
-          .data(function(d) {
-            return d.map(function(data, i){return {"idx": i, "xpos": timeScale(d.x0)+(timeScale(d.x1)-timeScale(d.x0))/2};})
-            });
-
-        // EXIT old elements not present in new data.
-        dots.exit()
-            .attr("class", "exit");
-
-        // UPDATE old elements present in new data.
-        dots.attr("class", "update");
-
-        // ENTER new elements present in new data.
-        // var cdots = dots.enter().append("circle")
-        dots.enter().append("circle")
-          .attr("class", "enter")
-          .attr("cx", function (d) {return d.xpos;})
-          // .attr("cy", 0)
-          .attr("cy", function(d) {
-              return fatalitiesScale(d.idx)-radius; })
-          // .attr("r", function(d) { return (d.length==0) ? 0 : radius; })
-          .attr("r", 0)
-          //.style("fill", "steelblue")
-          .merge(dots)
-          .on("mouseover", function(d) {
-              d3.select(this)
-                .style("fill", "red");
-            })
-            .on("mouseout", function(d) {
-              d3.select(this)
-                  .style("fill", "steelblue");
-                tooltip.transition()
-                     .duration(500)
-                     .style("opacity", 0);
-            })
-          .transition()
-            .duration(500)
-            .attr("r", function(d) {
-            return (d.length==0) ? 0 : radius; });
-          // .style("fill", "black");;
-
-
+    const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
+    crashesScale.domain([0, crashes_max ]);
+    
+    
+    // Show crashes on the map
+    map.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) {
+            return projection([d.lng, d.lat])[0];
+        })
+        .attr("cy", function(d) {
+            return projection([d.lng, d.lat])[1];
+        })
+        .attr("r", function(d) {
+            return fatalitiesScale( d.Fatalities );
+        })
+        .style("fill", "red")
+        .style("opacity", 0.7)
+        .on("click", function(d){
+            tooltip.style("display", "none");
         });
+
+    // Define tooltip for crash markers
+    tooltip = d3.select("body").append("div").attr("class", "toolTip");
+
+
+    // Draw axis
+    const xAxis = d3.axisBottom( timeScale )
+                    .tickFormat( d3.timeFormat("%Y") );
+    graph.append("g")
+        .attr("class", "axis axis--grid")
+        .attr("transform", "translate(0," + (height/3 - padding) + ")")
+        .call(xAxis)
+        .selectAll("text") // Rotate labels
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-45)")
+        .selectAll(".tick")
+        .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
+
+    const yAxis = d3.axisLeft( crashesScale )
+                    .ticks( 5 );
+    graph.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(yAxis);
+
+    graph.append("g")
+            .attr("class", "brush")
+            .call(d3.brushX()
+            .extent([[padding, 0], [width - padding, height/3 + padding]])
+            .on("end", brushended));
+
+
+    /***** Work on graph dot histogram *****/
+
+
+    console.log(crashesGroupByYear)
+    // 2. Display
+    graph.selectAll("circle")
+         .data(crashesGroupByYear)
+         .enter()
+         .append("circle")
+         .attr("cx", function(d) {
+            return timeScale(d.key);
+         })
+         .attr("cy", function(d) {
+            return crashesScale(d.value);
+         })
+        .attr("r", 5);
 });
 
 function brushended() {
