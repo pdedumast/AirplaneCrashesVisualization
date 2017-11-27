@@ -2,6 +2,7 @@
 const width = 1000;
 const height = 500;
 const padding = 50;
+const margin = {top: 10, right: 30, bottom: 30, left: 30};
 
 let tooltip
 
@@ -24,6 +25,13 @@ function zoomed() {
 let zoom = d3.zoom()
     .scaleExtent([1, 8])
     .on("zoom", zoomed);
+//Define map projection
+let projection = d3.geoNaturalEarth1()
+    .scale(180)
+    .translate([width / 2, height / 2]);
+
+/* *************************************************** */
+// Functions to manage zooming and dragging on the map
 
 // If the drag behavior prevents the default click,
 // also stop propagation so we don’t click-to-zoom.
@@ -33,14 +41,6 @@ function stopped() {
 }
 /* **************************************************** */
 
-
-//Define map projection
-let projection = d3.geoMercator()
-                    .translate([width/2, height/2])
-                    .scale([120]);
-
-//overwrite projection for tests
-projection = d3.geoNaturalEarth1();
 
 //Define default path generator
 let path = d3.geoPath()
@@ -89,30 +89,9 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
     //Load airplane crashes data
     d3.csv("/data/aircrashes1.csv", function(data) {
 
-         // Define scales DOMAIN
-        const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
-        const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
-        date_max.setFullYear(date_max.getFullYear()+1);
-        timeScale.domain( [date_min, date_max]);
-
+      
         const fatalities_max = d3.max(data, d => d["Fatalities"]);
-        fatalitiesScale.domain( [ 0, fatalities_max ]);        
-        
-        crashesGroupByYear = d3.nest()
-        .key( function(d){
-            return new Date(d.Date).getFullYear() })
-        .rollup(function(d) { 
-            return d3.sum(d, function() { return 1; });
-        }).entries(data)
-        
-        const crashes_min = d3.min(crashesGroupByYear, function(d) { return d.value; });
-        const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; }); 
-        crashesScale.domain([0, crashes_max ]);
-
-        // Define tooltip for crashes market
-        tooltip = d3.select("body").append("div").attr("class", "toolTip");
-
-
+        fatalitiesScale.domain( [ 0, fatalities_max ]);
 
         // Show crashes on the map
         map.selectAll("circle")
@@ -142,12 +121,32 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
                     .on("click", function(d){
                         tooltip.style("display", "none");
                     });
-        })
+            })
+
+
+         // Define scales domain
+        const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
+        const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
+        date_max.setFullYear(date_max.getFullYear()+1);
+        timeScale.domain( [date_min, date_max]);
+
+        crashesGroupByYear = d3.nest()
+        .key( function(d){
+            return new Date(d.Date).getFullYear() })
+        .rollup(function(d) {
+            return d3.sum(d, function() { return 1; });
+        }).entries(data)
+
+        const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
+        crashesScale.domain([0, crashes_max ]);
+
+        // Define tooltip for crash markers
+        tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
 
         // Draw axis
         const xAxis = d3.axisBottom( timeScale )
-				        .tickFormat( d3.timeFormat("%Y") );
+                        .tickFormat( d3.timeFormat("%Y") );
         graph.append("g")
             .attr("class", "axis axis--grid")
             .attr("transform", "translate(0," + (height/3 - padding) + ")")
@@ -168,35 +167,112 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
             .call(yAxis);
 
         graph.append("g")
-				.attr("class", "brush")
-				.call(d3.brushX()
-				.extent([[padding, 0], [width - padding, height/3 + padding]])
-				.on("end", brushended));
+                .attr("class", "brush")
+                .call(d3.brushX()
+                .extent([[padding, 0], [width - padding, height/3 + padding]])
+                .on("end", brushended));
 
-        // *** Filter by year ***
-        let year_min = 1920, year_max = 1925;
 
-        // Create list of kept years
-        const list_years = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
-        my_list_years = list_years(year_min, year_max)
+        // Create list of selected years
+        const integerList = (min = 1900, max = 2000) => [...Array(max - min + 1)].map((x,i) => min + i);
+        listYears = integerList(date_min.getFullYear(), date_max.getFullYear())
+        console.log(listYears);
 
         // Keep only selected years
-        const data_selectedYears = data.filter((x) =>  new Date(x.Date).getFullYear() >= year_min && new Date(x.Date).getFullYear() <= year_max)
+/*        let crashesByYear = [listYears.length];
+        for (var i = 0; i < listYears.length; i++) {
+          const current_year = listYears[i];
+          let num_crashes = data.filter((elem) => new Date(elem.Date).getFullYear() == current_year).length;
 
-        // Sum fatalities over the years
-        const nested_data_year =  data_selectedYears.map
-        console.log(new Date(data_selectedYears[0].Date));
+          crashesByYear[i] = {'Year': current_year,
+                              'Crashes': num_crashes};
+        }*/
 
-    });
+        graph.append("g")
+          .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-    function brushended() {
-      // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-      // Get year range selected
-      var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
-      console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
-    }
+        // Set up the binning parameters for the histogram
+        var nbins = crashesGroupByYear.length;
 
+        var histogram = d3.histogram()
+          .domain(timeScale.domain())
+          // Freedman–Diaconis rule
+          // .thresholds(d3.thresholdFreedmanDiaconis(data.map(function (d){ return d.Value}),
+          //                                          Math.min.apply(null, data.map(function (d){ return d.Value})),
+          //                                          Math.max.apply(null, data.map(function (d){ return d.Value}))))
+          .thresholds(timeScale.ticks(nbins))
+          .value(function(d) { return d.Crashes;} )
+
+        // Compute the histogram
+        var bins = histogram(crashesGroupByYear);
+
+        console.log(bins);
+
+        // radius dependent of data length
+        var radius = fatalitiesScale(crashesGroupByYear.length - 1)/2;
+        console.log("RADIUS " + radius);
+
+        // bins objects
+        var bin_container = graph.selectAll("g")
+          .data(bins);
+
+        bin_container.enter().append("g")
+          // .attr("transform", function(d) { return "translate(" + (x(d.x0)+(x(d.x1)-x(d.x0))/2) + "," + y(data.length) + ")"; });
+
+        // JOIN new data with old elements.
+        var dots = bin_container.selectAll("circle")
+          .data(function(d) {
+            return d.map(function(data, i){return {"idx": i, "xpos": timeScale(d.x0)+(timeScale(d.x1)-timeScale(d.x0))/2};})
+            });
+
+        // EXIT old elements not present in new data.
+        dots.exit()
+            .attr("class", "exit");
+
+        // UPDATE old elements present in new data.
+        dots.attr("class", "update");
+
+        // ENTER new elements present in new data.
+        // var cdots = dots.enter().append("circle")
+        dots.enter().append("circle")
+          .attr("class", "enter")
+          .attr("cx", function (d) {return d.xpos;})
+          // .attr("cy", 0)
+          .attr("cy", function(d) {
+              return fatalitiesScale(d.idx)-radius; })
+          // .attr("r", function(d) { return (d.length==0) ? 0 : radius; })
+          .attr("r", 0)
+          //.style("fill", "steelblue")
+          .merge(dots)
+          .on("mouseover", function(d) {
+              d3.select(this)
+                .style("fill", "red");
+            })
+            .on("mouseout", function(d) {
+              d3.select(this)
+                  .style("fill", "steelblue");
+                tooltip.transition()
+                     .duration(500)
+                     .style("opacity", 0);
+            })
+          .transition()
+            .duration(500)
+            .attr("r", function(d) {
+            return (d.length==0) ? 0 : radius; });
+          // .style("fill", "black");;
+
+
+        });
 });
+
+function brushended() {
+  // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+  // Get year range selected
+  var s = d3.event.selection || timeScale.range();  // if no brush, we take full range
+  console.log(s.map(x => new Date(timeScale.invert(x)).getFullYear()));
+}
+
 
 
 
@@ -206,6 +282,8 @@ Countries GeoJson : https://github.com/johan/world.geo.json
 Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
 Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
 Brush: https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
+Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
