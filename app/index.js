@@ -88,14 +88,15 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 d3.csv("/data/aircrashes1.csv", function(error, data) {
     if (error) throw error;
     
-    // Define scales DOMAIN
+    // Define scales domain
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
     
     const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
+    date_min.setFullYear(date_min.getFullYear()-1);
     date_max.setFullYear(date_max.getFullYear()+1);
-    timeScale.domain( [date_min.getFullYear(), date_max.getFullYear()]);
+    timeScale.domain( [date_min, date_max] );
 
     let crashesGroupByYear = d3.nest()
     .key( function(d){
@@ -182,7 +183,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
          .enter()
          .append("circle")
          .attr("cx", function(d) {
-            return timeScale( d.key );
+            return timeScale( new Date( d.key, 1, 1 ) );
          })
          .attr("cy", function(d) {
             return crashesScale( d.value );
