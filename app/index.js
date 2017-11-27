@@ -109,7 +109,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     crashesScale.domain([0, crashes_max ]);
     
     
-    let currentRange;
+    let currentRange = timeScale.range;
     let crashesRadius = function(d) { 
         if(!currentRange || new Date( d["Date"] ).getFullYear() < currentRange[0] || new Date( d["Date"]).getFullYear() > currentRange[1] ) {
             return 0;
