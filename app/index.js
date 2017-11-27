@@ -125,8 +125,19 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .style("fill", "red")
         .style("opacity", 0.7)
         .on("click", function(d){
-            tooltip.style("display", "none");
-        });
+            tooltip
+                .style("left", d3.event.pageX + "px")
+                .style("top", d3.event.pageY + "px")
+                .style("display", "inline-block")
+                .html( (d.Date) + "<br>"
+                    + (d.Location) + "<br>"
+                    + "Operator : " + (d.Operator) + "<br>"
+                    + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard))
+                .on("click", function(d){
+                    tooltip.style("display", "none");
+                });
+        })
+
 
     // Define tooltip for crash markers
     tooltip = d3.select("body").append("div").attr("class", "toolTip");
@@ -171,10 +182,10 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
          .enter()
          .append("circle")
          .attr("cx", function(d) {
-            return timeScale(d.key);
+            return timeScale( d.key );
          })
          .attr("cy", function(d) {
-            return crashesScale(d.value);
+            return crashesScale( d.value );
          })
         .attr("r", 5);
 });
