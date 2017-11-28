@@ -26,8 +26,11 @@
 
 # AirplaneCrashesVisualization
 
+## Install server (first use)
+`npm install http-server`
+
 ## Start server
-npm start
+`npm start`
 
 Go to [localhost:3000](http://localhost:3000)
 
