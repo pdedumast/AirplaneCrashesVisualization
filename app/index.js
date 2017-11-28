@@ -87,11 +87,11 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
 //Load airplane crashes data
 d3.csv("/data/aircrashes1.csv", function(error, data) {
     if (error) throw error;
-    
+
     // Define scales domain
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
-    
+
     const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
     date_min.setFullYear(date_min.getFullYear()-1);
@@ -107,10 +107,10 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
     const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
     crashesScale.domain([0, crashes_max ]);
-    
-    
+
+
     let currentRange = timeScale.range;
-    let crashesRadius = function(d) { 
+    let crashesRadius = function(d) {
         if(!currentRange || new Date( d["Date"] ).getFullYear() < currentRange[0] || new Date( d["Date"]).getFullYear() > currentRange[1] ) {
             return 0;
         } else {
@@ -174,36 +174,79 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .attr("class", "axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
-    
+
     let brush = d3.brushX()
             .extent([[padding, 0], [width - padding, height/3 + padding]])
-            
+
             .on("brush", hightlightCircles)
             .on("end", filterCrashes);
-    
-    
+
+
     graph.append("g")
             .attr("class", "brush")
             .call(brush);
 
 
     /***** Work on graph dot histogram *****/
+    // 1. Generate used array
+    const generateArray1toN = (len=50) => Array.from(Array(len), (value, index) => index + 1);
 
-    // 2. Display
-    let circles = graph.selectAll("circle")
-                        .data(crashesGroupByYear)
-                        .enter()
-                        .append("circle")
-                        .attr("cx", function(d) {
-                            return timeScale( new Date( d.key, 1, 1 ) );
-                        })
-                        .attr("cy", function(d) {
-                            return crashesScale( d.value );
-                        })
-                        .attr("r", 4)   
-                        .attr("class", "non_brushed");
+    let prepare_graph_data = function(d) {
+                                let new_dict = [];
+                                for (let yr = 0; yr < d.length; yr ++) {
+                                  new_dict.push({key : d[yr].key, value : generateArray1toN(d[yr].value)});
+                                }
+                                return new_dict;
+                              }
 
-    function isBrushed(brush_coords, cx, cy) {
+    const data_graph = prepare_graph_data(crashesGroupByYear);
+
+
+    // Generation
+    graph.selectAll('circle')
+          .data(data_graph)
+          .enter().append('g')
+            .each(function(d){
+                d3.select(this).selectAll("circle")
+                      .data(function (d) {
+                        let dict = []; // create an empty array
+                        for(value in d.value ){
+                          dict.push({ key:   d.key, value: value });
+                        }
+                        return dict;
+                      })
+                      .enter().append('circle')
+                .attr("cx", function(d,j) {
+                        return timeScale( new Date( d.key, 1, 1 ) );
+                    })
+                    .attr("cy", function(d) {
+                        return crashesScale( d.value );
+                    })
+                    .attr("r", 1)
+                    .attr("class", "non_brushed")
+            });
+  let circles = graph.selectAll('circle');
+
+
+
+    // // 2. Display
+    // let circles = graph.selectAll("circle")
+    //                     .data(crashesGroupByYear)
+    //                     .enter()
+    //                     .append("circle")
+    //                     .attr("cx", function(d) {
+    //                         return timeScale( new Date( d.key, 1, 1 ) );
+    //                     })
+    //                     .attr("cy", function(d) {
+    //                         return crashesScale( d.value );
+    //                     })
+    //                     .attr("r", 4)
+    //                     .attr("class", "non_brushed");
+
+
+
+
+    function isBrushed(brush_coords, cx) {
 
          let x0 = brush_coords[0],
              x1 = brush_coords[1];
@@ -214,18 +257,18 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
     function hightlightCircles() {
         brush_coords = d3.brushSelection(this);
+
         circles.attr("class", "non_brushed");
         circles.filter(function (){
-                   var cx = d3.select(this).attr("cx"),
-                       cy = d3.select(this).attr("cy");
+                   var cx = d3.select(this).attr("cx");
 
-                   return isBrushed(brush_coords, cx, cy);
+                   return isBrushed(brush_coords, cx);
                })
                .attr("class", "brushed");
     }
-    
+
     function filterCrashes (){
-        
+
         tooltip.style("display", "none");
 
         let s = d3.event.selection || timeScale.range();
@@ -234,8 +277,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
            .attr("r", crashesRadius);
     }
 
-    
-    
+
+
 });
 
 
@@ -249,7 +292,7 @@ Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774
 ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
 Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
-Brush: 
+Brush:
 - https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
 - http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b (Color)
 - https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling (Filter )
