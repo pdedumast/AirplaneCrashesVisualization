@@ -19,6 +19,11 @@ body {
     fill : #999;
 }
 
+.crashes:hover{
+    cursor : pointer;
+    stroke : white;
+    
+}
 .toolTip {
     position: absolute;
     background: #ffffff;
