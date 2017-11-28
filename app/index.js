@@ -78,8 +78,8 @@ d3.json("/world.geo.json-master/countries.geo.json", function(json) {
         .enter()
         .append("path")
         .attr("d", path)
-        .style("fill", "#fcda94")
-        .style('stroke', '#fcbf94')
+        .style("fill", "#222")
+        .style('stroke', '#111')
         .style('stroke-width', '0.4')
         .on("click", reset);
 })
