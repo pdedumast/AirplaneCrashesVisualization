@@ -1,9 +1,22 @@
 body {
-    background-color: #b5d0d0;
+    background-color: #000000;
+    font-family: 'Montserrat', sans-serif;
 }
 .background {
     fill: none;
     pointer-events: all;
+}
+
+.title{
+    color : #BBB;
+}
+.subtitle{
+    color: #BBB;
+}
+
+/* Graph */
+.axis, .axis text{
+    fill : #999;
 }
 
 .toolTip {
