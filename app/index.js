@@ -39,23 +39,7 @@ function stopped() {
 /* **************************************************** */
 
 
-//Define default path generator
-let path = d3.geoPath()
-            .projection(projection);
-
-//Create SVG element : map
-let map = d3.select("body")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .on("click", stopped, true);
-map.append("rect")
-    .attr("class", "background")
-    .attr("width", width)
-    .attr("height", height)
-    .on("click", reset);
-let country = map.append("g");
-map.call(zoom);
+const map = new Map();
 
 
 //Create SVG element : graph
@@ -70,27 +54,23 @@ let fatalitiesScale =   d3.scaleLinear().range([ 0.5 , 3 ]);
 let crashesScale    =   d3.scaleLinear().range([ height/3 - padding, padding ]);
 
 //Load in GeoJSON data
-d3.json("/world.geo.json-master/countries.geo.json", function(json) {
-
+d3.json("/data/map.geo.json", function(error,data) {
+    if (error) throw error;
     //Bind data and create one path per GeoJSON feature
-    country.selectAll("path")
-        .data(json.features)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .style("fill", "#222")
-        .style('stroke', '#111')
-        .style('stroke-width', '0.4')
-        .on("click", reset);
+    map.storeMap(data);
 })
 
 //Load airplane crashes data
 d3.csv("/data/aircrashes1.csv", function(error, data) {
     if (error) throw error;
+    
+    
 
     // Define scales domain
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
+    
+    map.storeCrashes(data);
 
     const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
@@ -118,38 +98,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         }
     }
 
-    // Show crashes on the map
-    map.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", function(d) {
-            return projection([d.lng, d.lat])[0];
-        })
-        .attr("cy", function(d) {
-            return projection([d.lng, d.lat])[1];
-        })
-        .attr("r", crashesRadius )
-        .attr("class", "crashes")
-        .style("fill", "red")
-        .style("opacity", 0.7)
-        .on("click", function(d){
-            tooltip
-                .style("left", d3.event.pageX + "px")
-                .style("top", d3.event.pageY + "px")
-                .style("display", "inline-block")
-                .html( (d.Date) + "<br>"
-                    + (d.Location) + "<br>"
-                    + "Operator : " + (d.Operator) + "<br>"
-                    + "Fatalities : " + parseInt(d.Fatalities) + "/" + parseInt(d.Aboard))
-                .on("click", function(d){
-                    tooltip.style("display", "none");
-                });
-        })
 
-
-    // Define tooltip for crash markers
-    tooltip = d3.select("body").append("div").attr("class", "toolTip");
 
 
     // Draw axis
@@ -269,12 +218,11 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
     function filterCrashes (){
 
-        tooltip.style("display", "none");
-
+        //tooltip.style("display", "none");
+        
         let s = d3.event.selection || timeScale.range();
         currentRange = (s.map(x => new Date(timeScale.invert(x)).getFullYear()));
-          map.selectAll(".crashes")
-           .attr("r", crashesRadius);
+        map.updateRange(currentRange);
     }
 
 
