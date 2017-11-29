@@ -219,6 +219,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     }
     function hightlightCircles() {
         brush_coords = d3.brushSelection(this);
+        clearBrushedCircles();
         circles.filter(function (){
                    var cx = d3.select(this).attr("cx");
 
