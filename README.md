@@ -26,14 +26,22 @@
 
 # AirplaneCrashesVisualization
 
-## Install server (first use)
-`npm install http-server`
+## What is it ?
 
-## Start server
-`npm start`
+An interactive visualization of airplane crashes in the world in the last century. For more information, please refer to this repo [wiki](https://github.com/pdedumast/AirplaneCrashesVisualization/wiki).
 
-Go to [localhost:3000](http://localhost:3000)
 
-## Dataset
+## Technologies used
 
-[Kaggle](https://www.kaggle.com/saurograndi/airplane-crashes-since-1908/data)
+* `npm` (see [here](https://nodejs.org/en/) for installation)
+* `D3.js`
+* `python3.5`
+
+## Launch application
+
+In root directory `AirplaneCrashesVisualization`:
+* `npm install http-server` (first time only)
+* `npm start`
+* in your brower, go to [localhost:3000](http://localhost:3000)
+
+## License
