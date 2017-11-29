@@ -226,6 +226,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
                    return isBrushed(brush_coords, cx);
                })
                .attr("class", "brushed");
+       filterCrashes();
     }
     function filterCrashes (){
 
