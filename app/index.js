@@ -135,8 +135,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .call(yAxis);
 
     let brush = d3.brushX()
-            .extent([[padding, 0], [width - padding, graphHeight + padding]])
-
+            .extent([[padding, 0], [ width - padding, graphHeight + padding ]])
+            .on("start brush", clearBrushedCircles )
             .on("brush", hightlightCircles)
             .on("end", filterCrashes);
 
@@ -214,10 +214,11 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     }
 
 
+    function clearBrushedCircles(){
+        circles.attr("class", "non_brushed");
+    }
     function hightlightCircles() {
         brush_coords = d3.brushSelection(this);
-
-        circles.attr("class", "non_brushed");
         circles.filter(function (){
                    var cx = d3.select(this).attr("cx");
 
@@ -225,7 +226,6 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
                })
                .attr("class", "brushed");
     }
-
     function filterCrashes (){
 
         //tooltip.style("display", "none");
