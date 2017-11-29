@@ -28,7 +28,7 @@
 
 ## What is it ?
 
-An interactive visualization of airplane crashes in the world in the last century. For more information, please refer to this repo [wiki] (https://github.com/pdedumast/AirplaneCrashesVisualization/wiki).
+An interactive visualization of airplane crashes in the world in the last century. For more information, please refer to this repo [wiki](https://github.com/pdedumast/AirplaneCrashesVisualization/wiki).
 
 
 ## Technologies used
