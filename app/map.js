@@ -7,7 +7,7 @@ function Map() {
 
     const dimension = {
         width: 900,
-        height: 600
+        height: mapHeight
     }
 
     // Map elements
@@ -18,7 +18,7 @@ function Map() {
     const projection = d3.geoNaturalEarth1().scale(200).translate([dimension.width / 2, dimension.height / 2]);
 
     // Canvas elements
-    const canvas = d3.select("body").append("canvas")
+    const canvas = d3.select("#map").append("canvas")
         .call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoomCanvas))
         .attr("width", dimension.width)
         .attr("height", dimension.height);

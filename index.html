@@ -13,9 +13,21 @@
     <script src="https://d3js.org/topojson.v1.min.js"></script>
 </head>
   <body>
-    <h1 class="title">Airplaine Crashes since 1908</h1>
-      <p class="subtitle">Data Vizualisation Project - Fall 2017</p>
+      
+      
+      <div class="container-fluid wrapper">
+        <div class="header">
+            <h1 class="title">Airplaine Crashes since 1908</h1>
+        </div>
+        <div class="row-fluid columns content"> 
+            <div id="map" class="span10 content-area"></div>
+            <div id="navigation" class="span2 article-tree"></div>
+        </div>
+        <div id="graph" class="footer"></div>
+    </div>
+      
     <script src="app/map.js"></script>
     <script src="app/index.js"></script>
+    
   </body>
 </html>

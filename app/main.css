@@ -1,6 +1,26 @@
 body {
     background-color: #222;
     font-family: 'Montserrat', sans-serif;
+    height: 100%;
+    overflow:hidden;
+}
+.container-fluid {
+    margin: 0 auto;
+    height: 100%;
+}
+.header{
+    height:15%;
+}
+.columns {
+    height: 65%;   
+}
+
+.content-area, .article-tree{
+    overflow:auto;
+    height: 65%;
+}
+.footer {
+    height:20%;
 }
 .background {
     fill: none;

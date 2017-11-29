@@ -1,8 +1,18 @@
 //Width and height
-const width = 1000;
-const height = 500;
-const padding = 50;
-const margin = {top: 10, right: 30, bottom: 30, left: 30};
+const margin        = {top: 10, right: 30, bottom: 30, left: 30};
+const padding       = 35;
+const width         = window.innerWidth - margin.left - margin.right;
+const height        = window.innerHeight - margin.top - margin.bottom;
+
+/*    const headerWidth 
+const headerHeight*/
+
+const mapWidth      = width;
+const mapHeight     = height / 4 * 3  - margin.top;
+
+const graphWidth    = width;
+const graphHeight   = height / 4 * 1 - margin.bottom;
+
 
 let tooltip
 
@@ -43,15 +53,15 @@ const map = new Map();
 
 
 //Create SVG element : graph
-let graph = d3.select("body")
+let graph = d3.select("#graph")
             .append("svg")
             .attr("width", width)
-            .attr("height", height/3);
+            .attr("height", graphHeight);
 
 // Define scales range
 let timeScale       =   d3.scaleTime().range([ padding, width - padding ]);
 let fatalitiesScale =   d3.scaleLinear().range([ 0.5 , 3 ]);
-let crashesScale    =   d3.scaleLinear().range([ height/3 - padding, padding ]);
+let crashesScale    =   d3.scaleLinear().range([ graphHeight - padding, padding ]);
 
 //Load in GeoJSON data
 d3.json("/data/map.geo.json", function(error,data) {
@@ -106,7 +116,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
                     .tickFormat( d3.timeFormat("%Y") );
     graph.append("g")
         .attr("class", "axis axis--grid")
-        .attr("transform", "translate(0," + (height/3 - padding) + ")")
+        .attr("transform", "translate(0," + (graphHeight - padding) + ")")
         .call(xAxis)
         .selectAll("text") // Rotate labels
         .style("text-anchor", "end")
@@ -125,7 +135,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         .call(yAxis);
 
     let brush = d3.brushX()
-            .extent([[padding, 0], [width - padding, height/3 + padding]])
+            .extent([[padding, 0], [width - padding, graphHeight + padding]])
 
             .on("brush", hightlightCircles)
             .on("end", filterCrashes);
