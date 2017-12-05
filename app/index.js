@@ -14,7 +14,7 @@ const graphWidth    = width;
 const graphHeight   = height / 4 * 1 - margin.bottom;
 
 
-let tooltip
+let tooltip = d3.select("body").append("div").attr("id", "tooltip");
 
 /* *************************************************** */
 // Functions to manage zooming and dragging on the map
@@ -241,7 +241,17 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
 });
 
+ 
+ d3.select('#map').on('click', function() {
 
+    // get mousePositions from the main canvas
+    var mouseX = d3.event.layerX || d3.event.offsetX;
+    var mouseY = d3.event.layerY || d3.event.offsetY;
+    console.log( mouseX + " - " + mouseY );
+
+    map.showTooltip(mouseX, mouseY);
+
+});
 
 
 /*
@@ -249,7 +259,8 @@ Sources
 Countries GeoJson : https://github.com/johan/world.geo.json
 Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
 Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
-ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+ToolTip on svg : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+Tooltip on canvas : https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444
 Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
 Brush:
