@@ -15,7 +15,9 @@ function Map() {
     let land;
     let range;
     let transform;
-    const projection = d3.geoNaturalEarth1().scale(200).translate([dimension.width / 2, dimension.height / 2]);
+    const projection = d3.geoNaturalEarth1()
+        .scale(200)
+        .translate([dimension.width / 2, dimension.height / 2]);
 
     // Canvas elements
     const canvas = d3.select("#map").append("canvas")
@@ -199,8 +201,7 @@ function Map() {
         } else {
 
             // Hide the tooltip when there our mouse doesn't find nodeData
-            tooltip
-                .style('display', 'None');
+            tooltip.style('display', 'None');
         }
     }
         

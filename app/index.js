@@ -4,9 +4,6 @@ const padding       = 35;
 const width         = window.innerWidth - margin.left - margin.right;
 const height        = window.innerHeight - margin.top - margin.bottom;
 
-/*    const headerWidth 
-const headerHeight*/
-
 const mapWidth      = width;
 const mapHeight     = height / 4 * 3  - margin.top;
 
@@ -16,41 +13,7 @@ const graphHeight   = height / 4 * 1 - margin.bottom;
 
 let tooltip = d3.select("body").append("div").attr("id", "tooltip");
 
-/* *************************************************** */
-// Functions to manage zooming and dragging on the map
-function reset() {
-    map.transition()
-      .duration(750)
-      .call( zoom.transform, d3.zoomIdentity );
-    tooltip.style("display", "none");
-}
-
-function zoomed() {
-    country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
-    country.attr("transform", d3.event.transform);
-    map.selectAll("circle").attr("transform", d3.event.transform);
-    tooltip.style("display", "none");
-}
-//Define map projection
-let projection = d3.geoNaturalEarth1()
-    .scale(180)
-    .translate([width / 2, height / 2]);
-
-let zoom = d3.zoom()
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed);
-
-// If the drag behavior prevents the default click,
-// also stop propagation so we don’t click-to-zoom.
-function stopped() {
-  if (d3.event.defaultPrevented) d3.event.stopPropagation();
-    tooltip.style("display", "none");
-}
-/* **************************************************** */
-
-
 const map = new Map();
-
 
 //Create SVG element : graph
 let graph = d3.select("#graph")
@@ -73,8 +36,6 @@ d3.json("/data/map.geo.json", function(error,data) {
 //Load airplane crashes data
 d3.csv("/data/aircrashes1.csv", function(error, data) {
     if (error) throw error;
-    
-    
 
     // Define scales domain
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
@@ -89,10 +50,10 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     timeScale.domain( [date_min, date_max] );
 
     let crashesGroupByYear = d3.nest()
-    .key( function(d){
-        return new Date(d.Date).getFullYear() })
-    .rollup(function(d) {
-        return d3.sum(d, function() { return 1; });
+        .key( function(d){
+            return new Date(d.Date).getFullYear() })
+        .rollup(function(d) {
+            return d3.sum(d, function() { return 1; });
     }).entries(data)
 
     const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
@@ -236,6 +197,13 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
         currentRange = (s.map(x => new Date(timeScale.invert(x)).getFullYear()));
         map.updateRange(currentRange);
     }
+    
+    function reset() {
+        map.transition()
+          .duration(750)
+          .call( zoom.transform, d3.zoomIdentity );
+        tooltip.style("display", "none");
+    }
 
 
 
@@ -243,12 +211,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
 
  
  d3.select('#map').on('click', function() {
-
-    // get mousePositions from the main canvas
     var mouseX = d3.event.layerX || d3.event.offsetX;
     var mouseY = d3.event.layerY || d3.event.offsetY;
-    console.log( mouseX + " - " + mouseY );
-
     map.showTooltip(mouseX, mouseY);
 
 });
