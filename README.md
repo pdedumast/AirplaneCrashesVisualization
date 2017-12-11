@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-  <img src="http://payload344.cargocollective.com/1/0/9521/9181181/planenew-01_670.png" width="250" />
+  <img src="https://www.svgrepo.com/show/561/frontal-airplane.svg" width="150" />
   </p>
   <p>
     <a href="">
