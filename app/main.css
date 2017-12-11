@@ -1,17 +1,52 @@
+* {
+  box-sizing: border-box; 
+}
 body {
     background-color: #222;
     font-family: 'Lato', sans-serif;
-    height: 100%;
-    overflow:hidden;
+    margin: 0; 
+    font-weight: 500;
 }
+
 .background {
     fill: none;
     pointer-events: all;
 }
 
-.title{
-    color : #BBB;
+section {
+    width: 100%;
+    display: table;
+    margin: 0;
+    max-width: none;
+    height: 100vh;
+}
+.content {
+    display: table-cell;
+}
+
+.intro {
     font-family: 'Alegreya Sans SC', sans-serif;
+    color: white;
+    height: 100vh;
+    padding: 0 7%;
+    background-image: url("../img/airplane4.jpeg");
+    background-size: cover;
+    vertical-align: middle;
+}
+.map{
+    height : 80vh;
+}
+.graph{
+    height : 20vh;
+}
+.title{
+    font-size: 4em;
+    display: block;
+    font-weight: 300;
+}
+.subtitle{
+    font-size: 2em;
+    font-weight: 500;
 }
 
 .hiddenCanvas { 
@@ -37,8 +72,8 @@ div#tooltip {
 }
 
 .brushed {
-    fill: #ff3399;
-    stroke: #8e1b54;
+    fill: #ffe20c;
+    stroke: None;
     opacity: 1.0;
 }
 
