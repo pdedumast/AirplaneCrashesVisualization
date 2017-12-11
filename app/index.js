@@ -178,6 +178,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     function clearBrushedCircles(){
         circles.attr("class", "non_brushed");
     }
+    
     function hightlightCircles() {
         brush_coords = d3.brushSelection(this);
         clearBrushedCircles();
@@ -189,10 +190,8 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
                .attr("class", "brushed");
        filterCrashes();
     }
+    
     function filterCrashes (){
-
-        //tooltip.style("display", "none");
-        
         let s = d3.event.selection || timeScale.range();
         currentRange = (s.map(x => new Date(timeScale.invert(x)).getFullYear()));
         map.updateRange(currentRange);
@@ -214,7 +213,6 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     var mouseX = d3.event.layerX || d3.event.offsetX;
     var mouseY = d3.event.layerY || d3.event.offsetY;
     map.showTooltip(mouseX, mouseY);
-
 });
 
 

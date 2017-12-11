@@ -128,6 +128,11 @@ function Map() {
         updateMap();
     }
     
+    function resetCanvas(){
+        transform = d3.zoomIdentity;
+        updateMap();
+    }
+    
     // Public functions
     this.storeMap = function (data) {
         land = topojson.feature(data, data.objects.land);
@@ -200,8 +205,10 @@ function Map() {
                     + "Fatalities : " + parseInt(nodeData.Fatalities) + "/" + parseInt(nodeData.Aboard));
         } else {
 
-            // Hide the tooltip when there our mouse doesn't find nodeData
+            // when the mouse doesn't find nodeData hide tooltip and reset the map to default view
             tooltip.style('display', 'None');
+            resetCanvas();
+            
         }
     }
         
