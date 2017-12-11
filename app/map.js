@@ -65,7 +65,7 @@ function Map() {
 
         })
     }
-    
+
     function updateMap(){
         context.save();
         context.clearRect(0, 0, dimension.width, dimension.height);
@@ -105,13 +105,14 @@ function Map() {
             .attr('x', (d) => (projection([d.lng, d.lat])[0]))
             .attr('y', (d) => (projection([d.lng, d.lat])[1]))
             .attr('r', (d) => (fatalitiesScale(d.Fatalities)))
+            .attr('tags',(d) => (console.log(d.tags)))
             .attr('year', (d) => (new Date(d.Date).getFullYear()));
 
         crashes = custom.selectAll('custom.circle');
 
         drawCrashes();
     }
-    
+
     this.updateRange = function (newRange) {
         range = newRange;
         updateMap();

@@ -4,7 +4,7 @@ const padding       = 35;
 const width         = window.innerWidth - margin.left - margin.right;
 const height        = window.innerHeight - margin.top - margin.bottom;
 
-/*    const headerWidth 
+/*    const headerWidth
 const headerHeight*/
 
 const mapWidth      = width;
@@ -71,15 +71,15 @@ d3.json("/data/map.geo.json", function(error,data) {
 })
 
 //Load airplane crashes data
-d3.csv("/data/aircrashes1.csv", function(error, data) {
+d3.csv("/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
-    
-    
+
+
 
     // Define scales domain
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
-    
+
     map.storeCrashes(data);
 
     const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
@@ -231,7 +231,7 @@ d3.csv("/data/aircrashes1.csv", function(error, data) {
     function filterCrashes (){
 
         //tooltip.style("display", "none");
-        
+
         let s = d3.event.selection || timeScale.range();
         currentRange = (s.map(x => new Date(timeScale.invert(x)).getFullYear()));
         map.updateRange(currentRange);
