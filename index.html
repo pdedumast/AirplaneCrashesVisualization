@@ -5,32 +5,78 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AirplaneCrachesVisualization</title>
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css?family=Alegreya+Sans+SC:300Lato:300" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="app/main.css">
-    
+    <link rel="stylesheet" type="text/css" href="app/sidebar.css" />
+
     <script src="http://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/topojson.v1.min.js"></script>
+
 </head>
   <body>
-      
-    <section class="intro">  
-      <div class="content">
-        <h1 class="title">Airplane Crashes from 1908 to 2009</h1>
-        <p class="subtitle">Data Visualization Project - Fall 2017</p>
-     </div>
-    </section>
 
-    <section>  
-        <div id="map"></div>
-        <div id="graph" class="footer"></div>
-    </section>
+    <div class="wrapper">
 
-      
-     
-      
+        <nav id="sidebar" class=active>
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <img alt="logo" src="img/logo.svg" />
+            </div>
+
+            <!-- Sidebar Links -->
+            <ul class="list-unstyled components">
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">
+                      <i class="fas fa-map"></i>
+                        Map
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-video"></i>
+                        Video
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fab fa-github"></i>
+                        Code
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fas fa-users"></i>
+                        Authors
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="content">
+
+            <section class="intro">
+              <div class="content">
+                <h1 class="title">Airplane Crashes from 1908 to 2009</h1>
+                <p class="subtitle">Data Visualization Project - Fall 2017</p>
+             </div>
+            </section>
+
+            <section>
+                <div id="map"></div>
+                <div id="graph" class="footer"></div>
+            </section>
+
+        <div>
+
+</div>
+
+
+
     <script src="app/map.js"></script>
     <script src="app/index.js"></script>
-    
+
   </body>
 </html>

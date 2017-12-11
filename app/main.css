@@ -1,10 +1,10 @@
 * {
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 body {
     background-color: #222;
     font-family: 'Lato', sans-serif;
-    margin: 0; 
+    margin: 0;
     font-weight: 500;
 }
 
@@ -51,8 +51,8 @@ section {
     width: 95vw;
 }
 
-.hiddenCanvas { 
-    display: none; 
+.hiddenCanvas {
+    display: none;
 }
 
 div#tooltip {
