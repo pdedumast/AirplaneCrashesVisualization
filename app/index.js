@@ -1,4 +1,5 @@
 //Width and height
+<<<<<<< HEAD
 const margin        = {top: 10, right: 30, bottom: 30, left: 30};
 const padding       = 35;
 const width         = window.innerWidth - margin.left - margin.right;
@@ -6,56 +7,28 @@ const height        = window.innerHeight - margin.top - margin.bottom;
 
 /*    const headerWidth
 const headerHeight*/
+=======
+const margin        = {top: 10, right: 10, bottom: 10, left: 10};
+const padding       = 30;
+const width         = window.innerWidth;
+const height        = window.innerHeight;
+>>>>>>> bbc4afa7615d75d2839ea3a5defa16a4b27d71fe
 
 const mapWidth      = width;
-const mapHeight     = height / 4 * 3  - margin.top;
+const mapHeight     = height / 4 * 3.2  - margin.top;
 
 const graphWidth    = width;
 const graphHeight   = height / 4 * 1 - margin.bottom;
 
 
-let tooltip
-
-/* *************************************************** */
-// Functions to manage zooming and dragging on the map
-function reset() {
-    map.transition()
-      .duration(750)
-      .call( zoom.transform, d3.zoomIdentity );
-    tooltip.style("display", "none");
-}
-
-function zoomed() {
-    country.style("stroke-width", 1.5 / d3.event.transform.k + "px");
-    country.attr("transform", d3.event.transform);
-    map.selectAll("circle").attr("transform", d3.event.transform);
-    tooltip.style("display", "none");
-}
-//Define map projection
-let projection = d3.geoNaturalEarth1()
-    .scale(180)
-    .translate([width / 2, height / 2]);
-
-let zoom = d3.zoom()
-    .scaleExtent([1, 8])
-    .on("zoom", zoomed);
-
-// If the drag behavior prevents the default click,
-// also stop propagation so we don’t click-to-zoom.
-function stopped() {
-  if (d3.event.defaultPrevented) d3.event.stopPropagation();
-    tooltip.style("display", "none");
-}
-/* **************************************************** */
-
+let tooltip = d3.select("body").append("div").attr("id", "tooltip");
 
 const map = new Map();
-
 
 //Create SVG element : graph
 let graph = d3.select("#graph")
             .append("svg")
-            .attr("width", width)
+            .attr("width", graphWidth)
             .attr("height", graphHeight);
 
 // Define scales range
@@ -74,8 +47,6 @@ d3.json("/data/map.geo.json", function(error,data) {
 d3.csv("/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
 
-
-
     // Define scales domain
     const fatalities_max = d3.max(data, d => d["Fatalities"]);
     fatalitiesScale.domain( [ 0, fatalities_max ]);
@@ -89,10 +60,10 @@ d3.csv("/data/aircrashes2.csv", function(error, data) {
     timeScale.domain( [date_min, date_max] );
 
     let crashesGroupByYear = d3.nest()
-    .key( function(d){
-        return new Date(d.Date).getFullYear() })
-    .rollup(function(d) {
-        return d3.sum(d, function() { return 1; });
+        .key( function(d){
+            return new Date(d.Date).getFullYear() })
+        .rollup(function(d) {
+            return d3.sum(d, function() { return 1; });
     }).entries(data)
 
     const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
@@ -217,6 +188,7 @@ d3.csv("/data/aircrashes2.csv", function(error, data) {
     function clearBrushedCircles(){
         circles.attr("class", "non_brushed");
     }
+
     function hightlightCircles() {
         brush_coords = d3.brushSelection(this);
         clearBrushedCircles();
@@ -228,13 +200,18 @@ d3.csv("/data/aircrashes2.csv", function(error, data) {
                .attr("class", "brushed");
        filterCrashes();
     }
+
     function filterCrashes (){
-
-        //tooltip.style("display", "none");
-
         let s = d3.event.selection || timeScale.range();
         currentRange = (s.map(x => new Date(timeScale.invert(x)).getFullYear()));
         map.updateRange(currentRange);
+    }
+
+    function reset() {
+        map.transition()
+          .duration(750)
+          .call( zoom.transform, d3.zoomIdentity );
+        tooltip.style("display", "none");
     }
 
 
@@ -242,6 +219,11 @@ d3.csv("/data/aircrashes2.csv", function(error, data) {
 });
 
 
+ d3.select('#map').on('click', function() {
+    var mouseX = d3.event.layerX || d3.event.offsetX;
+    var mouseY = d3.event.layerY || d3.event.offsetY;
+    map.showTooltip(mouseX, mouseY);
+});
 
 
 /*
@@ -249,7 +231,8 @@ Sources
 Countries GeoJson : https://github.com/johan/world.geo.json
 Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
 Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
-ToolTip : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+ToolTip on svg : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
+Tooltip on canvas : https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444
 Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 
 Brush:
