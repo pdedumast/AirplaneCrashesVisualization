@@ -16,7 +16,6 @@ body {
 section {
     width: 100%;
     display: table;
-    margin: 0;
     max-width: none;
     height: 100vh;
 }
@@ -27,18 +26,12 @@ section {
 .intro {
     font-family: 'Alegreya Sans SC', sans-serif;
     color: white;
-    height: 100vh;
     padding: 0 7%;
     background-image: url("../img/airplane4.jpeg");
     background-size: cover;
     vertical-align: middle;
 }
-.map{
-    height : 80vh;
-}
-.graph{
-    height : 20vh;
-}
+
 .title{
     font-size: 4em;
     display: block;
@@ -47,6 +40,15 @@ section {
 .subtitle{
     font-size: 2em;
     font-weight: 500;
+}
+
+.map{
+    height : 77vh;
+    width : 95vw;
+}
+.graph{
+    height : 17vh;
+    width: 95vw;
 }
 
 .hiddenCanvas { 
@@ -63,6 +65,10 @@ div#tooltip {
     font-size:12px;
     color : black;
     display:none;
+}
+
+.navigation{
+    border-color :aliceblue;
 }
 
 

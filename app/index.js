@@ -1,11 +1,11 @@
 //Width and height
-const margin        = {top: 10, right: 30, bottom: 30, left: 30};
-const padding       = 35;
-const width         = window.innerWidth - margin.left - margin.right;
-const height        = window.innerHeight - margin.top - margin.bottom;
+const margin        = {top: 10, right: 10, bottom: 10, left: 10};
+const padding       = 30;
+const width         = window.innerWidth;
+const height        = window.innerHeight;
 
 const mapWidth      = width;
-const mapHeight     = height / 4 * 3  - margin.top;
+const mapHeight     = height / 4 * 3.2  - margin.top;
 
 const graphWidth    = width;
 const graphHeight   = height / 4 * 1 - margin.bottom;
@@ -18,7 +18,7 @@ const map = new Map();
 //Create SVG element : graph
 let graph = d3.select("#graph")
             .append("svg")
-            .attr("width", width)
+            .attr("width", graphWidth)
             .attr("height", graphHeight);
 
 // Define scales range

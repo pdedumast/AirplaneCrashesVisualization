@@ -6,7 +6,7 @@ function Map() {
     }
 
     const dimension = {
-        width: 900,
+        width: mapWidth,
         height: mapHeight
     }
 
@@ -125,6 +125,7 @@ function Map() {
 
     function zoomCanvas() {
         transform = d3.event.transform;
+        console.log(transform);
         updateMap();
     }
     
