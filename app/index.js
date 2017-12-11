@@ -1,18 +1,8 @@
 //Width and height
-<<<<<<< HEAD
-const margin        = {top: 10, right: 30, bottom: 30, left: 30};
-const padding       = 35;
-const width         = window.innerWidth - margin.left - margin.right;
-const height        = window.innerHeight - margin.top - margin.bottom;
-
-/*    const headerWidth
-const headerHeight*/
-=======
 const margin        = {top: 10, right: 10, bottom: 10, left: 10};
 const padding       = 30;
 const width         = window.innerWidth;
 const height        = window.innerHeight;
->>>>>>> bbc4afa7615d75d2839ea3a5defa16a4b27d71fe
 
 const mapWidth      = width;
 const mapHeight     = height / 4 * 3.2  - margin.top;
