@@ -1,8 +1,27 @@
 function Map() {
     // Attributes
-    const color = {
+    const color ={
         map: "#656565",
         crashes: "#ff5252",
+
+        navy : "#001F3F",
+        blue : "#0074D9",
+        aqua : "#7FDBFF",
+        teal : "#39CCCC",
+        olive : "#3D9970",
+        green : "#2ECC40",
+        lime : "#01FF70",
+        yellow : "#FFDC00",
+        orange : "#FF851B",
+        red : "#FF4136",
+        fuchsia : "#F012BE",
+        purple : "#B10DC9",
+        maroon : "#85144B",
+        white : "#FFFFFF",
+        silver :"#DDDDDD",
+        gray : "#AAAAAA",
+        black : "#111111",
+
         null: "rgba(0,0,0,0)"
     }
 
@@ -19,6 +38,17 @@ function Map() {
     let display = {
       map:true
     }
+    /*let filters = {
+      mechanical_fail,
+      navigation_error,
+      weather,
+      shot_down,
+      crash_takingoff,
+      crash_landing,
+      air_collision,
+      human_error,
+      no_tag
+    }*/
     const projection = d3.geoNaturalEarth1()
         .scale(200)
         .translate([dimension.width / 2, dimension.height / 2]);
@@ -92,12 +122,16 @@ function Map() {
         crashes.each(function () {
             var node = d3.select(this);
             //context.fillStyle = 'steelblue';
+            //console.log(node.attr('tags'))
+            //if(node.attr('tags').indexOf('mechanical_fail')>=0)
+                //console.log(node.attr('tags'))
             if (node.attr('year') > range[0] && node.attr('year') < range[1]) {
                 ctx.beginPath();
                 ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
                 ctx.arc(node.attr('x'),
                     node.attr('y'),
                     node.attr('r'), 0, 2 * Math.PI);
+                ctx.globalAlpha = 0.7
                 ctx.fill();
                 ctx.closePath();
             }
@@ -143,6 +177,10 @@ function Map() {
         updateMap();
     }
 
+    function getColor(){
+
+    }
+
     // Public functions
     this.storeMap = function (data) {
         land = topojson.feature(data, data.objects.land);
@@ -164,7 +202,8 @@ function Map() {
             .attr('y', (d) => (projection([d.lng, d.lat])[1]))
             .attr('r', (d) => (fatalitiesScale(d.Fatalities)))
             .attr('year', (d) => (new Date(d.Date).getFullYear()))
-            .attr('fillStyle', color.crashes )
+            .attr('fillStyle', (d) => ("#ff5252"))
+            .attr('tags', (d)=>(d.tags))
             .attr('fillStyleHidden', function(d) {
                 if (!d.hiddenCol) {
                     d.hiddenCol = genColor();

@@ -37,12 +37,30 @@
                     </a>
                     Display map
                     <label class="switch">
-                      <input name="map-checkbox" type="checkbox" onchange="doalert(this)">
+                      <input type="checkbox" name="map-checkbox"  onchange="doalert(this)">
                       <span class="slider round"></span>
                     </label>
-                    Display
+                    <a id="list">
+
+                    </a>
+
+                    mechanical_fail
                     <label class="switch">
-                      <input type="checkbox">
+                      <input type="checkbox" name="mechanical_fail" onchange="filter(this)">
+                      <span class="slider round"></span>
+                    </label>
+                    navigation_error
+                    <label class="switch">
+                      <input type="checkbox" name="navigation_error" onchange="filter(this)">
+                      <span class="slider round"></span>
+                    </label>
+                    weather
+                    <label class="switch">
+                      <input type="checkbox" name="weather" onchange="filter(this)">
+                      <span class="slider round"></span>
+                    </label>
+                    <label class="switch">
+                      <input type="checkbox" name="mechanical_fail" onchange="filter(this)">
                       <span class="slider round"></span>
                     </label>
                 </li>

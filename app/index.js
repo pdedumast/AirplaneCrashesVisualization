@@ -42,6 +42,49 @@ function doalert(checkboxElem) {
   }
 }
 
+function filter(checkboxElem) {
+  console.log(checkboxElem.name)
+  if (checkboxElem.checked) {
+    //map.hideMap();
+  } else {
+    //map.hideMap();
+  }
+}
+var options = [
+        set0 = ['Option 1','Option 2','option3'],
+        set1 = ['First Option','Second Option','Third Option']
+    ];
+
+function FilterList(array) {
+    // Create the list element:
+    let list = document.getElementById("list");
+
+    for(var i = 0; i < array.length; i++) {
+        // Create the list item:
+        let switch_ = document.createElement('label');
+        switch_.classList.add("switch");
+
+        let input = document.createElement("input");
+        input.setAttribute("type", "checkbox");
+        input.setAttribute("name",array[i]);
+        input.setAttribute("onchange","filter(this)");
+
+        let span = document.createElement("span");
+        span.classList.add("slider");
+        span.classList.add("round");
+
+        switch_.appendChild(input);
+        switch_.appendChild(span);
+
+        // Add it to the list:
+        list.appendChild(switch_);
+    }
+}
+
+// Add the contents of options[0] to #foo:
+FilterList(options[0]);
+
+
 //Load airplane crashes data
 d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
