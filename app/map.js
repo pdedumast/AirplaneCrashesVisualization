@@ -20,7 +20,7 @@ function Map() {
       map:true
     }
     const projection = d3.geoNaturalEarth1()
-        .scale(200)
+        .scale(240)
         .translate([dimension.width / 2, dimension.height / 2]);
 
     // Canvas elements
@@ -71,8 +71,8 @@ function Map() {
     this.setUp = function () {
         transform = {
             k: 1,
-            x: 0,
-            y: 0
+            x: -126,
+            y: -4
         };
 
         range = [1907, 2010];
