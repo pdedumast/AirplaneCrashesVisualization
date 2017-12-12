@@ -4,11 +4,11 @@ const padding       = 30;
 const width         = window.innerWidth;
 const height        = window.innerHeight;
 
-const mapWidth      = width;
-const mapHeight     = height / 4 * 3.2  - margin.top;
+const mapWidth      = width / 4 * 3;
+const mapHeight     = height ;
 
-const graphWidth    = width;
-const graphHeight   = height / 4 * 1 - margin.bottom;
+const graphWidth    = width  / 4 * 1;
+const graphHeight   = height;
 
 
 let tooltip = d3.select("body").append("div").attr("id", "tooltip");
@@ -22,9 +22,9 @@ let graph = d3.select("#graph")
             .attr("height", graphHeight);
 
 // Define scales range
-let timeScale       =   d3.scaleTime().range([ padding, width - padding ]);
+let timeScale       =   d3.scaleTime().range([ padding, graphHeight - padding ]);
 let fatalitiesScale =   d3.scaleLinear().range([ 0.5 , 3 ]);
-let crashesScale    =   d3.scaleLinear().range([ graphHeight - padding, padding ]);
+let crashesScale    =   d3.scaleLinear().range([ padding , graphWidth - padding]);
 
 var pathname = document.location.origin + document.location.pathname;
 //Load in GeoJSON data
@@ -54,7 +54,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
     const date_min = new Date( d3.min(data, d => new Date(d["Date"])));
     const date_max = new Date( d3.max(data, d => new Date(d["Date"])));
-    date_min.setFullYear(date_min.getFullYear()-1);
+    date_min.setFullYear(date_min.getFullYear()-2);
     date_max.setFullYear(date_max.getFullYear()+1);
     timeScale.domain( [date_min, date_max] );
 
@@ -82,30 +82,33 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
 
     // Draw axis
-    const xAxis = d3.axisBottom( timeScale )
-                    .tickFormat( d3.timeFormat("%Y") );
+    const xAxis = d3.axisBottom( crashesScale )
+                    .ticks( 5 );
+    const yAxis = d3.axisLeft( timeScale )
+            .tickFormat( d3.timeFormat("%Y") );
+    
     graph.append("g")
-        .attr("class", "axis axis--grid")
-        .attr("transform", "translate(0," + (graphHeight - padding) + ")")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + padding + ")")
         .call(xAxis)
         .selectAll("text") // Rotate labels
         .style("text-anchor", "end")
-        .attr("dx", "-.8em")
+        .attr("dx", ".5em")
+        .attr("dy", "-1em");
+    
+    graph.append("g")
+        .attr("class", "axis axis--grid")
+         .attr("transform", "translate(" + padding + ",0)")
+        .call(yAxis)
+        .selectAll("text") // Rotate labels
+        .style("text-anchor", "end")
         .attr("dy", ".15em")
-        .attr("transform", "rotate(-45)")
         .selectAll(".tick")
         .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
+   
 
-    const yAxis = d3.axisLeft( crashesScale )
-                    .ticks( 5 );
-
-    graph.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + padding + ",0)")
-        .call(yAxis);
-
-    let brush = d3.brushX()
-            .extent([[padding, 0], [ width - padding, graphHeight + padding ]])
+    let brush = d3.brushY()
+            .extent([[0, padding], [ graphWidth - padding,  graphHeight - padding ]])
             .on("start brush", clearBrushedCircles )
             .on("brush", hightlightCircles)
             .on("end", filterCrashes);
@@ -145,11 +148,11 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                         return dict;
                       })
                       .enter().append('circle')
-                .attr("cx", function(d,j) {
-                        return timeScale( new Date( d.key, 1, 1 ) );
+                    .attr("cx", function(d,j) {
+                        return crashesScale( d.value );
                     })
                     .attr("cy", function(d) {
-                        return crashesScale( d.value );
+                        return timeScale( new Date( d.key, 1, 1 ) );
                     })
                     .attr("r", 1)
                     .attr("class", "non_brushed")
@@ -175,12 +178,11 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
 
 
-    function isBrushed(brush_coords, cx) {
+    function isBrushed(brush_coords, cy) {
+         let yo = brush_coords[0],
+             y1 = brush_coords[1];
 
-         let x0 = brush_coords[0],
-             x1 = brush_coords[1];
-
-        return x0 <= cx && cx <= x1;
+        return yo <= cy && cy <= y1;
     }
 
 
@@ -192,9 +194,9 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         brush_coords = d3.brushSelection(this);
         clearBrushedCircles();
         circles.filter(function (){
-                   var cx = d3.select(this).attr("cx");
+                   var cy = d3.select(this).attr("cy");
 
-                   return isBrushed(brush_coords, cx);
+                   return isBrushed(brush_coords, cy);
                })
                .attr("class", "brushed");
        filterCrashes();
