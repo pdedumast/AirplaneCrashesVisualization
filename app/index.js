@@ -33,6 +33,14 @@ d3.json("/data/map.geo.json", function(error,data) {
     map.storeMap(data);
 })
 
+function doalert(checkboxElem) {
+  if (checkboxElem.checked) {
+    map.hideMap();
+  } else {
+    map.hideMap();
+  }
+}
+
 //Load airplane crashes data
 d3.csv("/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;

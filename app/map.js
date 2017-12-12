@@ -2,7 +2,8 @@ function Map() {
     // Attributes
     const color = {
         map: "#656565",
-        crashes: "#ff5252"
+        crashes: "#ff5252",
+        null: "rgba(0,0,0,0)"
     }
 
     const dimension = {
@@ -15,6 +16,9 @@ function Map() {
     let land;
     let range;
     let transform;
+    let display = {
+      map:true
+    }
     const projection = d3.geoNaturalEarth1()
         .scale(200)
         .translate([dimension.width / 2, dimension.height / 2]);
@@ -71,14 +75,14 @@ function Map() {
             y: 0
         };
 
-        range = [1908, 2010];
+        range = [1907, 2010];
     }
 
 
     // Interal functions
     function drawMap() {
         context.beginPath();
-        context.fillStyle = color.map;
+        context.fillStyle = display.map ? color.map: color.null;
         path(land);
         context.fill();
     }
@@ -100,7 +104,12 @@ function Map() {
 
         })
     }
-    
+
+    this.hideMap = function() {
+      display.map = !display.map;
+      updateMap();
+    }
+
     function updateMap(){
 
         tooltip.style("display", "none");
