@@ -26,9 +26,9 @@ let timeScale       =   d3.scaleTime().range([ padding, width - padding ]);
 let fatalitiesScale =   d3.scaleLinear().range([ 0.5 , 3 ]);
 let crashesScale    =   d3.scaleLinear().range([ graphHeight - padding, padding ]);
 
-var root = document.location.origin;
+var pathname = document.location.pathname;
 //Load in GeoJSON data
-d3.json(root+"/data/map.geo.json", function(error,data) {
+d3.json(pathname+"/data/map.geo.json", function(error,data) {
     if (error) throw error;
     //Bind data and create one path per GeoJSON feature
     map.storeMap(data);
@@ -43,7 +43,7 @@ function doalert(checkboxElem) {
 }
 
 //Load airplane crashes data
-d3.csv(root + "/data/aircrashes2.csv", function(error, data) {
+d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
 
     // Define scales domain
