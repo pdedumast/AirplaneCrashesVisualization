@@ -18,7 +18,7 @@
   <p>🏛</p>
 
   <p>
-    <a href="">
+    <a href="https://pdedumast.github.io/AirplaneCrashesVisualization/">
       Launch App
     </a>
   </p>
