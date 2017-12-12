@@ -86,7 +86,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                     .ticks( 5 );
     const yAxis = d3.axisLeft( timeScale )
             .tickFormat( d3.timeFormat("%Y") );
-    
+
     graph.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + padding + ")")
@@ -95,7 +95,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .style("text-anchor", "end")
         .attr("dx", ".5em")
         .attr("dy", "-1em");
-    
+
     graph.append("g")
         .attr("class", "axis axis--grid")
          .attr("transform", "translate(" + padding + ",0)")
@@ -105,7 +105,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .attr("dy", ".15em")
         .selectAll(".tick")
         .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
-   
+
 
     let brush = d3.brushY()
             .extent([[0, padding], [ graphWidth - padding,  graphHeight - padding ]])
@@ -159,21 +159,36 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             });
   let circles = graph.selectAll('circle');
 
+    // Display additional information
+    d3.json(pathname + "/data/timeline.json", function(error,dataset) {
+        if (error) throw error;
 
+        console.log("data timeline");
+        console.log(dataset);
 
-    // // 2. Display
-    // let circles = graph.selectAll("circle")
-    //                     .data(crashesGroupByYear)
-    //                     .enter()
-    //                     .append("circle")
-    //                     .attr("cx", function(d) {
-    //                         return timeScale( new Date( d.key, 1, 1 ) );
-    //                     })
-    //                     .attr("cy", function(d) {
-    //                         return crashesScale( d.value );
-    //                     })
-    //                     .attr("r", 4)
-    //                     .attr("class", "non_brushed");
+        graph.selectAll("text")
+        			   .data(dataset)
+        			   .enter()
+        			   .append("text")
+        			   .text(function(d) {
+                   console.log("lamaaaa");
+                    console.log("Date = " + d.date);
+                    console.log("Event = " + d.event);
+        			   		return "Allo";
+        			   })
+        			   .attr("x", function(d) {
+                   console.log("x = " + timeScale(d.date));
+        			   		return timeScale(3);
+        			   })
+        			   .attr("y", function(d) {
+                   console.log("y = " + 0);
+        			   		return 0;
+        			   })
+        			   .attr("font-family", "sans-serif")
+        			   .attr("font-size", "11px")
+        			   .attr("fill", "red");
+    })
+
 
 
 
