@@ -71,8 +71,8 @@ function Map() {
     this.setUp = function () {
         transform = {
             k: 1,
-            x: -126,
-            y: -4
+            x: 0,
+            y: 0
         };
 
         range = [1907, 2010];
@@ -134,12 +134,14 @@ function Map() {
 
     function zoomCanvas() {
         transform = d3.event.transform;
-        console.log(transform);
         updateMap();
     }
 
     function resetCanvas(){
         transform = d3.zoomIdentity;
+        canvas.transition()
+          .duration(750)
+          .call( d3.zoom().transform, d3.zoomIdentity );
         updateMap();
     }
 
