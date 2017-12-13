@@ -189,15 +189,6 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         map.updateRange(currentRange);
     }
 
-    function reset() {
-        map.transition()
-          .duration(750)
-          .call( zoom.transform, d3.zoomIdentity );
-        tooltip.style("display", "none");
-    }
-
-
-
 });
 
 
