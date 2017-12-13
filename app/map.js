@@ -50,7 +50,7 @@ function Map() {
       no_tag
     }*/
     const projection = d3.geoNaturalEarth1()
-        .scale(200)
+        .scale(240)
         .translate([dimension.width / 2, dimension.height / 2]);
 
     // Canvas elements
@@ -125,7 +125,9 @@ function Map() {
             //console.log(node.attr('tags'))
             //if(node.attr('tags').indexOf('mechanical_fail')>=0)
                 //console.log(node.attr('tags'))
-            if (node.attr('year') > range[0] && node.attr('year') < range[1]) {
+            if (node.attr('year') > range[0] && node.attr('year') < =range[1]) {
+=======
+
                 ctx.beginPath();
                 ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
                 ctx.arc(node.attr('x'),
@@ -168,12 +170,14 @@ function Map() {
 
     function zoomCanvas() {
         transform = d3.event.transform;
-        console.log(transform);
         updateMap();
     }
 
     function resetCanvas(){
         transform = d3.zoomIdentity;
+        canvas.transition()
+          .duration(750)
+          .call( d3.zoom().transform, d3.zoomIdentity );
         updateMap();
     }
 
