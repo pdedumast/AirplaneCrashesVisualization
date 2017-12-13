@@ -92,7 +92,7 @@ function Map() {
         crashes.each(function () {
             var node = d3.select(this);
             //context.fillStyle = 'steelblue';
-            if (node.attr('year') > range[0] && node.attr('year') < range[1]) {
+            if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
                 ctx.beginPath();
                 ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
                 ctx.arc(node.attr('x'),
