@@ -1,8 +1,10 @@
-[{
-  "date": "1910",
-  "event": "First seaplane autonomous flight"
-},
-{
-  "date": "1913",
-  "event": "1st flight accross Mediterranean see completed by Roland Garros"
-}]
+[
+    {
+      "date": 1910,
+      "event": "First seaplane autonomous flight"
+    },
+    {
+      "date": 1913,
+      "event": "1st flight accross Mediterranean see completed by Roland Garros"
+    }
+]
