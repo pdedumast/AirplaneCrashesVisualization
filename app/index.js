@@ -159,6 +159,38 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             });
   let circles = graph.selectAll('circle');
 
+  // Display additional informations on timeline
+  d3.json(pathname + "data/timeline.json", function(error, dataset) {
+    if (error) throw error;
+
+    console.log("in data timeline");
+    console.log(dataset);
+    console.log(dataset[0].date);
+
+    graph.selectAll("text")
+            .data(dataset)
+            .enter()
+            .append("text")
+            .text(function(d) {
+              console.log("Date = " + d.date);
+              console.log("Event = " + d.event);
+              return d.event;
+            })
+            .attr("x", function(d) {
+              console.log("caca");
+              return 100;
+            })
+            .attr("y", function(d) {
+              return timeScale(d.date.getFullYear);
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "11px")
+            .attr("fill", "red");
+  })
+
+
+
+
     function isBrushed(brush_coords, cy) {
          let yo = brush_coords[0],
              y1 = brush_coords[1];
