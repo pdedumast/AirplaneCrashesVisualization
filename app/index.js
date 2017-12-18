@@ -42,6 +42,8 @@ function doalert(checkboxElem) {
   }
 }
 
+
+let timeline = events[0];
 //Load airplane crashes data
 d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
@@ -157,36 +159,26 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                     .attr("r", 1)
                     .attr("class", "non_brushed")
             });
-  let circles = graph.selectAll('circle');
+    let circles = graph.selectAll('circle');
 
-  // Display additional informations on timeline
-  d3.json(pathname + "data/timeline.json", function(error, dataset) {
-    if (error) throw error;
-
-    console.log("in data timeline");
-    console.log(dataset);
-    console.log(dataset[0].date);
-
+    // Display additional informations on timeline
     graph.selectAll("text")
-            .data(dataset)
+            .data(data_graph)
             .enter()
             .append("text")
             .text(function(d) {
-              console.log("Date = " + d.date);
-              console.log("Event = " + d.event);
-              return d.event;
+                return timeline[d.key];
             })
             .attr("x", function(d) {
               console.log("caca");
               return 100;
             })
             .attr("y", function(d) {
-              return timeScale(d.date.getFullYear);
+              return  timeScale( new Date( d.key, 1, 1 ) );
             })
             .attr("font-family", "sans-serif")
             .attr("font-size", "11px")
-            .attr("fill", "red");
-  })
+            .attr("fill", "white");
 
 
 
