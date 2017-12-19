@@ -43,7 +43,8 @@ function doalert(checkboxElem) {
 }
 
 
-let timeline = events[0];
+let timeline_events = events[0];
+let timeline_periods = periods;
 //Load airplane crashes data
 d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
@@ -166,10 +167,9 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
 
 
-    let data_timeline = Object.keys(timeline);
-    console.log("data_timeline : " + data_timeline);
+    let date_events = Object.keys(timeline_events);
     graph.selectAll("timeline_circle")
-            .data(data_timeline)
+            .data(date_events)
             .enter()
             .append("circle")
             .attr("cx", function(d) {
@@ -181,12 +181,28 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .attr("r", 4);
 
 
+    graph.selectAll("timeline_bars")
+            .data(timeline_periods)
+            .enter()
+            .append("rect")
+            .attr("x", 8 * padding / 10)
+            .attr("y", function(d) {
+              return timeScale( new Date(d.end , 1, 1) );
+            })
+            .attr("width", padding / 6)
+            .attr("height", function(d) {
+                console.log(d.end - d.begin);
+                return timeScale( new Date(d.end - d.begin , 1, 1) );
+            })
+
+
+
     graph.selectAll("text")
             .data(data_graph)
             .enter()
             .append("text")
             .text(function(d) {
-                return timeline[d.key];
+                return timeline_events[d.key];
             })
             .attr("x", function(d) {
               return 100;
