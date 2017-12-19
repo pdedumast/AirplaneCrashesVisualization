@@ -165,7 +165,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
     // Display additional informations on timeline
 
-
+    let tooltip_graph = d3.select("body").append("div").attr("class", "toolTip_graph");
 
     let date_events = Object.keys(timeline_events);
     graph.selectAll("timeline_circle")
@@ -179,7 +179,13 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 return timeScale( new Date(d, 1, 1) );
             })
             .attr("r", padding / 8)
-            .style("fill", "white");
+            .style("fill", "white")
+            .on('click', function(d) {
+              tooltip_graph.style("left", d3.event.pageX - 10 + "px")
+                            .style("top", d3.event.pageY - 10 + "px")
+                            .style("display", "inline-block")
+                            .html(timeline_events[d]);
+           });
 
 
     graph.selectAll("timeline_bars")
@@ -194,7 +200,13 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .attr("height", function(d) {
                 return timeScale( new Date(d.end - d.begin , 1, 1) );
             })
-            .style("fill", "white");
+            .style("fill", "white")
+            .on('click', function(d) {
+              tooltip_graph.style("left", d3.event.pageX - 10 + "px")
+                            .style("top", d3.event.pageY - 10 + "px")
+                            .style("display", "inline-block")
+                            .html(d.event);
+           });
 
 
 
@@ -271,5 +283,4 @@ Brush:
 - https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
 - http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b (Color)
 - https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling (Filter )
-Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
 */
