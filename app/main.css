@@ -72,10 +72,12 @@ div#tooltip {
 }
 
 /* Graph */
-.axis, .axis text{
+.xaxis, .xaxis text,.yaxis text{
     fill : #999;
 }
-
+.tick, .tick line,.yaxis path{
+  stroke:#999;
+}
 .brushed {
     fill: #ffe20c;
     stroke: None;

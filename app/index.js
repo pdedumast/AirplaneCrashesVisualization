@@ -91,7 +91,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .tickFormat( d3.timeFormat("%Y") );
 
     graph.append("g")
-        .attr("class", "axis")
+        .attr("class", "xaxis")
         .attr("transform", "translate(0," + padding + ")")
         .call(xAxis)
         .selectAll("text") // Rotate labels
@@ -100,14 +100,14 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .attr("dy", "-1em");
 
     graph.append("g")
-        .attr("class", "axis axis--grid")
+        .attr("class", "yaxis")
          .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis)
         .selectAll("text") // Rotate labels
         .style("text-anchor", "end")
         .attr("dy", ".15em")
         .selectAll(".tick")
-        .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
+        .classed("tick", function(d) { return new Date( d["Date"] ); });
 
 
     let brush = d3.brushY()
@@ -152,7 +152,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                       })
                       .enter().append('circle')
                     .attr("cx", function(d,j) {
-                        return crashesScale( d.value );
+                        return crashesScale( d.value ) + 1;
                     })
                     .attr("cy", function(d) {
                         return timeScale( new Date( d.key, 1, 1 ) );
@@ -173,27 +173,28 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .enter()
             .append("circle")
             .attr("cx", function(d) {
-                return padding / 2;
+                return padding-padding / 8;
             })
             .attr("cy", function(d) {
                 return timeScale( new Date(d, 1, 1) );
             })
-            .attr("r", 4);
+            .attr("r", padding / 8)
+            .style("fill", "white");
 
 
     graph.selectAll("timeline_bars")
             .data(timeline_periods)
             .enter()
             .append("rect")
-            .attr("x", 8 * padding / 10)
+            .attr("x", padding)
             .attr("y", function(d) {
               return timeScale( new Date(d.end , 1, 1) );
             })
-            .attr("width", padding / 6)
+            .attr("width", padding / 8)
             .attr("height", function(d) {
-                console.log(d.end - d.begin);
                 return timeScale( new Date(d.end - d.begin , 1, 1) );
             })
+            .style("fill", "white");
 
 
 
