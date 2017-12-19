@@ -110,7 +110,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
 
     let brush = d3.brushY()
-            .extent([[0, padding], [ graphWidth - padding,  graphHeight - padding ]])
+            .extent([[padding, padding], [ graphWidth - padding,  graphHeight - padding ]])
             .on("start brush", clearBrushedCircles )
             .on("brush", hightlightCircles)
             .on("end", filterCrashes);
@@ -161,7 +161,26 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             });
     let circles = graph.selectAll('circle');
 
+
     // Display additional informations on timeline
+
+
+
+    let data_timeline = Object.keys(timeline);
+    console.log("data_timeline : " + data_timeline);
+    graph.selectAll("timeline_circle")
+            .data(data_timeline)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) {
+                return padding / 2;
+            })
+            .attr("cy", function(d) {
+                return timeScale( new Date(d, 1, 1) );
+            })
+            .attr("r", 4);
+
+
     graph.selectAll("text")
             .data(data_graph)
             .enter()
@@ -170,7 +189,6 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 return timeline[d.key];
             })
             .attr("x", function(d) {
-              console.log("caca");
               return 100;
             })
             .attr("y", function(d) {
