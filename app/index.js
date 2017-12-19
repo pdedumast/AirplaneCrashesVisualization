@@ -34,7 +34,7 @@ d3.json(pathname+"/data/map.geo.json", function(error,data) {
     map.storeMap(data);
 })
 
-function doalert(checkboxElem) {
+function toogleMap(checkboxElem) {
   if (checkboxElem.checked) {
     map.hideMap();
   } else {

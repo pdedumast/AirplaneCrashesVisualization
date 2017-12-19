@@ -134,7 +134,6 @@ function Map() {
 
     function zoomCanvas() {
         transform = d3.event.transform;
-        console.log(transform);
         updateMap();
     }
 
