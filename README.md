@@ -52,7 +52,7 @@ In root directory `AirplaneCrashesVisualization`:
 * Tooltip on a canvas element : https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444
 * Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
 * Brush : https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-* Hightlight brushed circles : http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b (Color)
+* Hightlight brushed circles : http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b
 * Filter crashes after brush : https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling
 
 ## License
