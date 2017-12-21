@@ -125,9 +125,7 @@ function Map() {
             //console.log(node.attr('tags'))
             //if(node.attr('tags').indexOf('mechanical_fail')>=0)
                 //console.log(node.attr('tags'))
-            if (node.attr('year') > range[0] && node.attr('year') < =range[1]) {
-=======
-
+            if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
                 ctx.beginPath();
                 ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
                 ctx.arc(node.attr('x'),
