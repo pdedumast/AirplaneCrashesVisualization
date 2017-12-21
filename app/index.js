@@ -185,6 +185,8 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             })
             .on('click', function(d) {
                 document.getElementById("text").innerHTML = d + " : " + timeline_events[d];
+                d3.selectAll("timeline_circle").style("fill", "white");
+                d3.select(this).style("fill", "red");
            });
 
 
@@ -209,6 +211,8 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             })
             .on('click', function(d) {
                 document.getElementById("text").innerHTML = d.begin + " - " + d.end + " : " + d.event;
+                d3.selectAll("timeline_bar").style("fill", "white");
+                d3.select(this).style("fill", "red");
            });
 
     
