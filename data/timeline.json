@@ -27,6 +27,6 @@ periods = [
       {
         "begin" : 1955,
         "end": 1975,
-        "event" : "World war I"
+        "event" : "Vietnam War"
       }
 ]
