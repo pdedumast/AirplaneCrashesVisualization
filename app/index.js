@@ -169,6 +169,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .data(date_events)
             .enter()
             .append("circle")
+            .attr("class", "event")
             .attr("cx", function(d) {
                 return padding-padding / 8;
             })
@@ -184,6 +185,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 document.body.style.cursor = "default";
             })
             .on('click', function(d) {
+                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "white");
                 document.getElementById("text").innerHTML = d + " : " + timeline_events[d];
                 d3.selectAll("timeline_circle").style("fill", "white");
                 d3.select(this).style("fill", "red");
@@ -194,6 +196,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .data(timeline_periods)
             .enter()
             .append("rect")
+            .attr("class", "event")
             .attr("x", padding)
             .attr("y", function(d) {
               return timeScale( new Date(d.end , 1, 1) );
@@ -210,6 +213,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 document.body.style.cursor = "default";
             })
             .on('click', function(d) {
+                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "white");
                 document.getElementById("text").innerHTML = d.begin + " - " + d.end + " : " + d.event;
                 d3.selectAll("timeline_bar").style("fill", "white");
                 d3.select(this).style("fill", "red");
