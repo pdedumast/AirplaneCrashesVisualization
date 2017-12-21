@@ -36,10 +36,11 @@ function Map() {
     navigation_error: "navigation error",
     weather: "weather",
     shot_down: "shot down",
-    crash_takingoff: "crash takingoff",
-    crash_landing: "crash landing",
+    //crash_takingoff: "crash takingoff",
+    //crash_landing: "crash landing",
     air_collision: "air colsision",
     human_error: "human error",
+    terract:"terrorist attack",
     no_tag: "no tag"
   }
 
@@ -55,8 +56,9 @@ function Map() {
     navigation_error: true,
     weather: true,
     shot_down: true,
-    crash_takingoff: true,
-    crash_landing: true,
+    terract: true,
+    //crash_takingoff: true,
+    //crash_landing: true,
     air_collision: true,
     human_error: true,
     no_tag: true
@@ -116,16 +118,16 @@ function Map() {
       'use strict'
 
       const filters = document.querySelector('#filters-list')
-      let filters_list;
+      let filters_list="";
       for (let f in filter_names) {
         const filter = `
             <p>${filter_names[f]}</p>
             <label class="switch">
-              // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\"">
+              // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
               <span class="slider round"></span>
             </label>
           `
-        filters_list += filter;
+        filters_list += filter ;
       }
       filters.innerHTML += filters_list;
     })();
@@ -139,6 +141,28 @@ function Map() {
     context.fill();
   }
 
+  function areFiltersActivated(tags){
+
+    tags = tags.split(",");
+
+    if(tags== ""){
+      if(display.no_tag == true){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+
+    for(let t in tags){
+      if(display[tags[t]]){
+        return true;
+      }
+    }
+    //console.log(tags)
+    return false;
+  }
+
   function drawCrashes(canvas, hidden) {
     let ctx = canvas.node().getContext("2d");
     crashes.each(function() {
@@ -146,18 +170,18 @@ function Map() {
       //context.fillStyle = 'steelblue';
       //console.log(node.attr('tags'))
       //if(node.attr('tags').indexOf('mechanical_fail')>=0)
-      console.log(node.attr('tags'))
-      if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
-        ctx.beginPath();
-        ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
-        ctx.arc(node.attr('x'),
-          node.attr('y'),
-          node.attr('r'), 0, 2 * Math.PI);
-        ctx.globalAlpha = 0.7
-        ctx.fill();
-        ctx.closePath();
+      if(areFiltersActivated(node.attr('tags'))){
+        if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
+          ctx.beginPath();
+          ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
+          ctx.arc(node.attr('x'),
+            node.attr('y'),
+            node.attr('r'), 0, 2 * Math.PI);
+          ctx.globalAlpha = 0.7
+          ctx.fill();
+          ctx.closePath();
+        }
       }
-
     })
   }
 
