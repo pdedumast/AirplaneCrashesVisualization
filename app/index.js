@@ -13,7 +13,11 @@ const graphHeight   = height;
 
 let tooltip = d3.select("body").append("div").attr("id", "tooltip");
 
-const map = new Map();
+const map = new Map(mapWidth,mapHeight);
+
+function onFilterChange(checkboxElem) {
+  map.changeFilter(checkboxElem);
+}
 
 //Create SVG element : graph
 let graph = d3.select("#graph")
@@ -34,55 +38,8 @@ d3.json(pathname+"/data/map.geo.json", function(error,data) {
     map.storeMap(data);
 })
 
-function doalert(checkboxElem) {
-  if (checkboxElem.checked) {
-    map.hideMap();
-  } else {
-    map.hideMap();
-  }
-}
 
-function filter(checkboxElem) {
-  console.log(checkboxElem.name)
-  if (checkboxElem.checked) {
-    //map.hideMap();
-  } else {
-    //map.hideMap();
-  }
-}
-var options = [
-        set0 = ['Option 1','Option 2','option3'],
-        set1 = ['First Option','Second Option','Third Option']
-    ];
 
-function FilterList(array) {
-    // Create the list element:
-    let list = document.getElementById("list");
-
-    for(var i = 0; i < array.length; i++) {
-        // Create the list item:
-        let switch_ = document.createElement('label');
-        switch_.classList.add("switch");
-
-        let input = document.createElement("input");
-        input.setAttribute("type", "checkbox");
-        input.setAttribute("name",array[i]);
-        input.setAttribute("onchange","filter(this)");
-
-        let span = document.createElement("span");
-        span.classList.add("slider");
-        span.classList.add("round");
-
-        switch_.appendChild(input);
-        switch_.appendChild(span);
-
-        // Add it to the list:
-        list.appendChild(switch_);
-    }
-}
-
-// Add the contents of options[0] to #foo:
-FilterList(options[0]);
 
 
 //Load airplane crashes data
@@ -129,7 +86,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                     .ticks( 5 );
     const yAxis = d3.axisLeft( timeScale )
             .tickFormat( d3.timeFormat("%Y") );
-    
+
     graph.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(0," + padding + ")")
@@ -138,7 +95,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .style("text-anchor", "end")
         .attr("dx", ".5em")
         .attr("dy", "-1em");
-    
+
     graph.append("g")
         .attr("class", "axis axis--grid")
          .attr("transform", "translate(" + padding + ",0)")
@@ -148,7 +105,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .attr("dy", ".15em")
         .selectAll(".tick")
         .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
-   
+
 
     let brush = d3.brushY()
             .extent([[0, padding], [ graphWidth - padding,  graphHeight - padding ]])

@@ -67,7 +67,7 @@ class Map {
   }
   _setCanvas() {
     return d3.select("#map").append("canvas")
-      .call(d3.zoom().scaleExtent([1, 8]).on("zoom", this.zoomCanvas))
+      //.call(d3.zoom().scaleExtent([1, 8]).on("zoom", this.zoomCanvas))
       .attr("width", this.dimension.width)
       .attr("height", this.dimension.height);
   }
@@ -84,9 +84,9 @@ class Map {
 
   // Interal functions
   drawMap() {
-    console.log(this);
+    //console.log(this);
     this.context.beginPath();
-    this.context.fillStyle = true" ? this.color.map: this.color.null;
+    this.context.fillStyle = true ? this.color.map: this.color.null;
     this.path(this.land);
     this.context.fill();
   }

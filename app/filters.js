@@ -36,25 +36,24 @@ class Filters{
       (() => {
         'use strict'
 
-        const employee_list = document.querySelector('#list')
+        const employee_list = document.querySelector('#filters-list')
         const test = "test bite couille"
         let filters_list;
         for(let f in this.filter_names) {
         const filter = `
           <p>${this.filter_names[f]}</p>
           <label class="switch">
-            <input type="checkbox" name="${f}" onchange="onFilterChange(this.name)">
+            // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\"">
             <span class="slider round"></span>
           </label>
         `
         filters_list += filter;
       }
       employee_list.innerHTML += filters_list;
-      })()
+    })();
+
   }
-  onFilterChange(checkboxElem) {
-    display[checkboxElem] = !display[checkboxElem];
-  }
+
 
 
 

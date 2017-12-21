@@ -16,7 +16,7 @@ body {
 
 section {
     width: 100vw;
-    display: table;
+    display: flex;
     height: 100vh;
 }
 

@@ -46,29 +46,10 @@
                       <input type="checkbox" name="map-checkbox"  onchange="doalert(this)">
                       <span class="slider round"></span>
                     </label>
-                    <a id="list">
+                    <a id="filters-list">
 
                     </a>
 
-                    mechanical_fail
-                    <label class="switch">
-                      <input type="checkbox" name="mechanical_fail" onchange="filter(this)">
-                      <span class="slider round"></span>
-                    </label>
-                    navigation_error
-                    <label class="switch">
-                      <input type="checkbox" name="navigation_error" onchange="filter(this)">
-                      <span class="slider round"></span>
-                    </label>
-                    weather
-                    <label class="switch">
-                      <input type="checkbox" name="weather" onchange="filter(this)">
-                      <span class="slider round"></span>
-                    </label>
-                    <label class="switch">
-                      <input type="checkbox" name="mechanical_fail" onchange="filter(this)">
-                      <span class="slider round"></span>
-                    </label>
                 </li>
                 <li>
                     <a href="#">
@@ -104,12 +85,20 @@
                 <div id="graph"></div>
             </section>
 
+            <section id="video_content">
+              [video]
+            </section>
+
+            <section id="authors-content">
+              [authors]
+            </section>
+
         </div>
 
       </div>
 
 
-
+    <script src="app/filters.js"></script>
     <script src="app/map.js"></script>
     <script src="app/index.js"></script>
 
