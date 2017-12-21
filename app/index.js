@@ -8,7 +8,7 @@ const mapWidth      = width / 4 * 3;
 const mapHeight     = height ;
 
 const graphWidth    = width  / 4 * 1;
-const graphHeight   = height;
+const graphHeight   = height / 5 * 4;
 
 
 let tooltip = d3.select("body").append("div").attr("id", "tooltip");
@@ -164,9 +164,6 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
 
     // Display additional informations on timeline
-
-    let tooltip_graph = d3.select("body").append("div").attr("class", "toolTip_graph");
-
     let date_events = Object.keys(timeline_events);
     graph.selectAll("timeline_circle")
             .data(date_events)
@@ -181,10 +178,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .attr("r", padding / 8)
             .style("fill", "white")
             .on('click', function(d) {
-              tooltip_graph.style("left", d3.event.pageX - 10 + "px")
-                            .style("top", d3.event.pageY - 10 + "px")
-                            .style("display", "inline-block")
-                            .html(timeline_events[d]);
+                document.getElementById("text").innerHTML = d + " : " + timeline_events[d];
            });
 
 
@@ -202,34 +196,10 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             })
             .style("fill", "white")
             .on('click', function(d) {
-              tooltip_graph.style("left", d3.event.pageX - 10 + "px")
-                            .style("top", d3.event.pageY - 10 + "px")
-                            .style("display", "inline-block")
-                            .html(d.event);
+                document.getElementById("text").innerHTML = d.begin + " - " + d.end + " : " + d.event;
            });
 
-
-
-    graph.selectAll("text")
-            .data(data_graph)
-            .enter()
-            .append("text")
-            .text(function(d) {
-                return timeline_events[d.key];
-            })
-            .attr("x", function(d) {
-              return 100;
-            })
-            .attr("y", function(d) {
-              return  timeScale( new Date( d.key, 1, 1 ) );
-            })
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "11px")
-            .attr("fill", "white");
-
-
-
-
+    
     function isBrushed(brush_coords, cy) {
          let yo = brush_coords[0],
              y1 = brush_coords[1];
