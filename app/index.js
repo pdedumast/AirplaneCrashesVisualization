@@ -265,18 +265,3 @@ d3.select('#map').on('mousemove', function(){
     map.showTooltip(mouseX, mouseY);
 });
 
-
-/*
-Sources
-Countries GeoJson : https://github.com/johan/world.geo.json
-Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
-Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
-ToolTip on svg : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
-Tooltip on canvas : https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444
-Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
-
-Brush:
-- https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-- http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b (Color)
-- https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling (Filter )
-*/
