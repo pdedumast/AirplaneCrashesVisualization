@@ -165,47 +165,21 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
     // Display additional informations on timeline
     let date_events = Object.keys(timeline_events);
-    graph.selectAll("timeline_circle")
-            .data(date_events)
-            .enter()
-            .append("circle")
-            .attr("class", "event")
-            .attr("cx", function(d) {
-                return padding-padding / 8;
-            })
-            .attr("cy", function(d) {
-                return timeScale( new Date(d, 1, 1) );
-            })
-            .attr("r", padding / 8)
-            .style("fill", "white")
-            .on("mouseover", function(){
-                document.body.style.cursor = "pointer";
-            })
-            .on("mouseout", function(){
-                document.body.style.cursor = "default";
-            })
-            .on('click', function(d) {
-                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "white");
-                document.getElementById("text").innerHTML = d + " : " + timeline_events[d];
-                d3.selectAll("timeline_circle").style("fill", "white");
-                d3.select(this).style("fill", "red");
-           });
-
-
+    
     graph.selectAll("timeline_bars")
             .data(timeline_periods)
             .enter()
             .append("rect")
             .attr("class", "event")
-            .attr("x", padding)
+            .attr("x", padding - padding / 5 )
             .attr("y", function(d) {
               return timeScale( new Date(d.end , 1, 1) );
             })
-            .attr("width", padding / 8)
+            .attr("width", padding / 5 )
             .attr("height", function(d) {
                 return timeScale( new Date(d.end - d.begin , 1, 1) );
             })
-            .style("fill", "white")
+            .style("fill", "#999")
             .on("mouseover", function(){
                 document.body.style.cursor = "pointer";
             })
@@ -213,12 +187,38 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 document.body.style.cursor = "default";
             })
             .on('click', function(d) {
-                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "white");
+                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "#999");
                 document.getElementById("text").innerHTML = d.begin + " - " + d.end + " : " + d.event;
                 d3.selectAll("timeline_bar").style("fill", "white");
                 d3.select(this).style("fill", "red");
            });
-
+    
+        graph.selectAll("timeline_circle")
+            .data(date_events)
+            .enter()
+            .append("circle")
+            .attr("class", "event")
+            .attr("cx", function(d) {
+                return padding-padding / 10;
+            })
+            .attr("cy", function(d) {
+                return timeScale( new Date(d, 1, 1) );
+            })
+            .attr("r", padding / 10)
+            .style("fill", "#999")
+            .style("stroke", "#000")
+            .on("mouseover", function(){
+                document.body.style.cursor = "pointer";
+            })
+            .on("mouseout", function(){
+                document.body.style.cursor = "default";
+            })
+            .on('click', function(d) {
+                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "#999");
+                document.getElementById("text").innerHTML = d + " : " + timeline_events[d];
+                d3.selectAll("timeline_circle").style("fill", "white");
+                d3.select(this).style("fill", "red");
+           });
     
     function isBrushed(brush_coords, cy) {
          let yo = brush_coords[0],
