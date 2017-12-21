@@ -86,3 +86,10 @@ div#tooltip {
     fill: #404040;
     opacity: 0.5;
 }
+
+
+
+#video{
+    height:100vh;
+    padding:3em;
+}
