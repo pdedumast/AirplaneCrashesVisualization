@@ -88,6 +88,26 @@ div#tooltip {
 }
 
 
+#authors{
+    text-align: center;
+    vertical-align: middle;
+}
+.author{
+    display:inline-block;
+    margin:5em;
+    font-size:16px;
+    color:#fff;
+}
+
+.author p{
+    font-family: 'Alegreya Sans SC', sans-serif;
+    font-size:26px;
+}
+
+.author img{
+    border-radius: 50%;
+    width:20em;
+}
 
 #video{
     height:100vh;
