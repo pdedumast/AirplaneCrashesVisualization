@@ -223,5 +223,20 @@ function Map() {
 
         }
     }
+    this.highlightCrash = function(mouseX,mouseY){
+        
+        // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
+        var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
+        var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+
+        // Get the data from our map
+        var nodeData = colorToNode[colKey];
+
+        if (nodeData) {
+            document.body.style.cursor = 'pointer';
+        } else {
+             document.body.style.cursor = 'default';
+        }
+    }
 
 }

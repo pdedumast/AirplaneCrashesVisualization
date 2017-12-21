@@ -34,7 +34,7 @@ d3.json(pathname+"/data/map.geo.json", function(error,data) {
     map.storeMap(data);
 })
 
-function doalert(checkboxElem) {
+function toogleMap(checkboxElem) {
   if (checkboxElem.checked) {
     map.hideMap();
   } else {
@@ -253,6 +253,12 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 });
 
 
+
+d3.select('#map').on('mousemove', function(){
+    var mouseX = d3.event.layerX || d3.event.offsetX;
+    var mouseY = d3.event.layerY || d3.event.offsetY;
+    map.highlightCrash(mouseX, mouseY);
+});
  d3.select('#map').on('click', function() {
     var mouseX = d3.event.layerX || d3.event.offsetX;
     var mouseY = d3.event.layerY || d3.event.offsetY;

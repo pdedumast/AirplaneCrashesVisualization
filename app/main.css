@@ -34,7 +34,7 @@ section {
     font-family: 'Alegreya Sans SC', sans-serif;
     color: white;
     padding: 0 7%;
-    background-image: url("../img/airplane4.jpeg");
+    background-image: url("../img/airplane.jpeg");
     background-size: cover;
     vertical-align: middle;
 }
@@ -132,4 +132,31 @@ div#tooltip {
 .non_brushed {
     fill: #404040;
     opacity: 0.5;
+}
+
+
+#authors{
+    text-align: center;
+    vertical-align: middle;
+}
+.author{
+    display:inline-block;
+    margin:5em;
+    font-size:16px;
+    color:#fff;
+}
+
+.author p{
+    font-family: 'Alegreya Sans SC', sans-serif;
+    font-size:26px;
+}
+
+.author img{
+    border-radius: 50%;
+    width:20em;
+}
+
+#video{
+    height:100vh;
+    padding:3em;
 }

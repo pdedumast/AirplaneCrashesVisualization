@@ -22,7 +22,7 @@
 
     <div class="wrapper">
 
-        <nav id="sidebar" class=active>
+        <nav id="sidebar">
             <!-- Sidebar Header -->
             <div class="sidebar-header">
                 <img alt="logo" src="img/logo.svg" />
@@ -30,24 +30,19 @@
 
             <!-- Sidebar Links -->
             <ul class="list-unstyled components">
-                <li onclick(){}>
+                <li>
                     <a href="#map">
                         <i class="fas fa-map"></i>
                         Map
                     </a>
                     Display map
                     <label class="switch">
-                      <input name="map-checkbox" type="checkbox" onchange="doalert(this)">
-                      <span class="slider round"></span>
-                    </label>
-                    Display
-                    <label class="switch">
-                      <input type="checkbox">
+                      <input name="map-checkbox" type="checkbox" onchange="toogleMap(this)">
                       <span class="slider round"></span>
                     </label>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#video">
                         <i class="fas fa-video"></i>
                         Video
                     </a>
@@ -59,7 +54,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#authors">
                         <i class="fas fa-users"></i>
                         Authors
                     </a>
@@ -85,14 +80,36 @@
                         <p id="text"><i>Click on any event on the timeline below to find out more about the history of aviation...</i></p>
                     </div>
                 </div>
-                <div class="content" id="graph">
-                
+                <div class="content" id="graph"></div>
+            </section>
+            
+            <section>
+                <div class="content" id="video"><a href="video"></a>
+                    <iframe src="https://www.youtube.com/embed/6NtTH8m45o4?rel=0" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen style="height: 100%;width: 100%;"></iframe>
                 </div>
             </section>
             
             <section>
-                <div class="content" id="video"><a href="video"></a></div>
-
+                <div class="content" id="authors"><a href="authors"></a>
+                    <div class="author">
+                        <a href="https://github.com/chamard"><img src="img/tchamard.jpg"></a>
+                        <br><br>
+                        <p>Thibault Chamard</p>
+                        <a href="mailto:thibaut.chamard@epfl.ch">thibault.chamard@epfl.ch</a>
+                    </div>
+                    <div class="author">
+                        <a href="https://github.com/pdedumast"><img src="img/pdedumast.jpg"></a>
+                        <br><br>
+                        <p>Priscille Guerrier De Dumast</p>
+                        <a href="mailto:priscille.guerrierdedumast@epfl.ch">priscille.guerrierdedumast@epfl.ch</a>
+                    </div>
+                    <div class="author">
+                        <a href="https://github.com/mathmout"><img src="img/mmareite.jpg"></a>
+                        <br><br>
+                        <p>Mathilde Mareite</p>
+                        <a href="mailto:mathilde.mareite@epfl.ch">mathilde.mareite@epfl.ch</a>
+                    </div>
+                </div>
             </section>
 
         </div>
