@@ -103,79 +103,11 @@ function Map() {
   }
 
 
-  // Interal functions
-  function drawMap() {
-    context.beginPath();
-    context.fillStyle = display.map ? color.map : color.null;
-    path(land);
-    context.fill();
-  }
-
-  function drawCrashes(canvas, hidden) {
-    let ctx = canvas.node().getContext("2d");
-    crashes.each(function() {
-      var node = d3.select(this);
-      //context.fillStyle = 'steelblue';
-      //console.log(node.attr('tags'))
-      //if(node.attr('tags').indexOf('mechanical_fail')>=0)
-      //console.log(node.attr('tags'))
-      if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
-        ctx.beginPath();
-        ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
-        ctx.arc(node.attr('x'),
-          node.attr('y'),
-          node.attr('r'), 0, 2 * Math.PI);
-        ctx.globalAlpha = 0.7
-        ctx.fill();
-        ctx.closePath();
-      }
-
-    })
-  }
-
-  this.hideMap = function() {
-    display.map = !display.map;
-    updateMap();
-  }
-
-  function updateMap() {
-
-    tooltip.style("display", "none");
-
-    context.save();
-    context.clearRect(0, 0, dimension.width, dimension.height);
-    context.translate(transform.x, transform.y);
-    context.scale(transform.k, transform.k);
-
-    hiddenContext.save();
-    hiddenContext.clearRect(0, 0, dimension.width, dimension.height);
-    hiddenContext.translate(transform.x, transform.y);
-    hiddenContext.scale(transform.k, transform.k);
-
-    drawMap();
-    drawCrashes(canvas, false);
-    drawCrashes(hiddenCanvas, true);
-
-    context.restore();
-    hiddenContext.restore();
-  }
-
-  function zoomCanvas() {
-    transform = d3.event.transform;
-    updateMap();
-  }
-
-  function resetCanvas() {
-    transform = d3.zoomIdentity;
-    canvas.transition()
-      .duration(750)
-      .call(d3.zoom().transform, d3.zoomIdentity);
-    updateMap();
-  }
-
-  function getColor() {
-
-  }
+  /************************************************
+   *
+   *                   Displaying
+   *
+   * **********************************************/
 
   function displayFilters() {
     // Create the list element:
@@ -184,7 +116,6 @@ function Map() {
       'use strict'
 
       const filters = document.querySelector('#filters-list')
-      const test = "test bite couille"
       let filters_list;
       for (let f in filter_names) {
         const filter = `
@@ -200,6 +131,44 @@ function Map() {
     })();
 
   }
+
+  function drawMap() {
+    context.beginPath();
+    context.fillStyle = display.map ? color.map : color.null;
+    path(land);
+    context.fill();
+  }
+
+  function drawCrashes(canvas, hidden) {
+    let ctx = canvas.node().getContext("2d");
+    crashes.each(function() {
+      var node = d3.select(this);
+      //context.fillStyle = 'steelblue';
+      //console.log(node.attr('tags'))
+      //if(node.attr('tags').indexOf('mechanical_fail')>=0)
+      console.log(node.attr('tags'))
+      if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
+        ctx.beginPath();
+        ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
+        ctx.arc(node.attr('x'),
+          node.attr('y'),
+          node.attr('r'), 0, 2 * Math.PI);
+        ctx.globalAlpha = 0.7
+        ctx.fill();
+        ctx.closePath();
+      }
+
+    })
+  }
+
+
+
+
+  function getColor() {
+
+  }
+
+
 
   // Public functions
   this.storeMap = function(data) {
@@ -249,6 +218,41 @@ function Map() {
    *                   Actions
    *
    * **********************************************/
+
+   function updateMap() {
+
+     tooltip.style("display", "none");
+
+     context.save();
+     context.clearRect(0, 0, dimension.width, dimension.height);
+     context.translate(transform.x, transform.y);
+     context.scale(transform.k, transform.k);
+
+     hiddenContext.save();
+     hiddenContext.clearRect(0, 0, dimension.width, dimension.height);
+     hiddenContext.translate(transform.x, transform.y);
+     hiddenContext.scale(transform.k, transform.k);
+
+     drawMap();
+     drawCrashes(canvas, false);
+     drawCrashes(hiddenCanvas, true);
+
+     context.restore();
+     hiddenContext.restore();
+   }
+
+   function zoomCanvas() {
+     transform = d3.event.transform;
+     updateMap();
+   }
+
+   function resetCanvas() {
+     transform = d3.zoomIdentity;
+     canvas.transition()
+       .duration(750)
+       .call(d3.zoom().transform, d3.zoomIdentity);
+     updateMap();
+   }
 
   this.updateRange = function(newRange) {
     range = newRange;
