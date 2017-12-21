@@ -211,6 +211,12 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 });
 
 
+
+d3.select('#map').on('mousemove', function(){
+    var mouseX = d3.event.layerX || d3.event.offsetX;
+    var mouseY = d3.event.layerY || d3.event.offsetY;
+    map.highlightCrash(mouseX, mouseY);
+});
  d3.select('#map').on('click', function() {
     var mouseX = d3.event.layerX || d3.event.offsetX;
     var mouseY = d3.event.layerY || d3.event.offsetY;
