@@ -146,7 +146,7 @@ function Map() {
       if(areFiltersActivated(node.attr('tags'))){
         if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
           ctx.beginPath();
-          ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : node.attr('fillStyle');
+          ctx.fillStyle = hidden ? node.attr('fillStyleHidden') : color.crashes;
           ctx.arc(node.attr('x'),
             node.attr('y'),
             node.attr('r'), 0, 2 * Math.PI);
@@ -188,7 +188,6 @@ function Map() {
       .attr('y', (d) => (projection([d.lng, d.lat])[1]))
       .attr('r', (d) => (fatalitiesScale(d.Fatalities)))
       .attr('year', (d) => (new Date(d.Date).getFullYear()))
-      .attr('fillStyle', (d) => ("#ff5252"))
       .attr('tags', (d) => (d.tags))
       .attr('fillStyleHidden', function(d) {
         if (!d.hiddenCol) {
