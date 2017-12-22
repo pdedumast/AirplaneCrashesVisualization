@@ -120,12 +120,13 @@ function Map() {
       const filters = document.querySelector('#filters-list')
       let filters_list="";
       for (let f in filter_names) {
-        const filter = `
+        const filter = `<div class="setting">
             <p>${filter_names[f]}</p>
             <label class="switch">
               // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
               <span class="slider round"></span>
             </label>
+            </div>
           `
         filters_list += filter ;
       }

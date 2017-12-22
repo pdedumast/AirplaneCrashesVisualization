@@ -71,6 +71,8 @@ div#tooltip {
     display:none;
 }
 
+
+
 /* Graph */
 .axis, .axis text{
     fill : #999;
@@ -85,4 +87,26 @@ div#tooltip {
 .non_brushed {
     fill: #404040;
     opacity: 0.5;
+}
+
+
+.setting{
+
+  color:red;
+}
+
+.container {
+  position: absolute;
+    height: 100vw;
+}
+
+.draggable {
+  border-radius: 10px;
+  margin: 0 10px 10px 0;
+  float: left;
+  left: 88px;
+  top: 68px;
+}
+.collapsed{
+  color:red
 }
