@@ -2,14 +2,23 @@ events = [
 {
     1910 : "First seaplane autonomous flight",
     1913 : "1st flight accross Mediterranean see completed by Roland Garros",
+    1917 : "Russian revolution",
     1919 : "1st Atlantic crossing completed in 23 days",
     1929 : "1st round-the-world flight completed by the Graf Zeppelin in 21 days",
+    1937 : "Final flight LZ-129 Hindenburg, detroyed by fire",
+    1940 : "Battle of Britain",
     1942 : "Me 262: World's first operational jet fighter",
     1943 : "Arado Ar 234: World's 1st jet-powered bomber",
     1952 : "1st commercial jet airliner",
     1958 : "Boeing 707",
+    1977 : "March 27th - Most deadly crash of history due to collision between two Boeing 747 (Tenerife)",
+    1985 : "August 12th - Second most deadly crash of history (Japan)",
     1987 : "Airbus A320",
+    1989 : "Berlin wall down",
+    1991 : "Soviet Union collapsed",
     1994 : "Boeing 777",
+    2003 : "Concorde crash at airport Paris Charles de Gaulle",
+    2003 : "Concorde last flight",
     2005 : "Airbus A380"
 }
 ]
@@ -29,4 +38,5 @@ periods = [
         "end": 1975,
         "event" : "Vietnam War"
       }
+
 ]
