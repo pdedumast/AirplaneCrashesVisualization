@@ -123,7 +123,7 @@ function Map() {
         const filter = `<div class="setting">
             <p>${filter_names[f]}</p>
             <label class="switch">
-              // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
+              <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
               <span class="slider round"></span>
             </label>
             </div>
@@ -178,7 +178,7 @@ function Map() {
           ctx.arc(node.attr('x'),
             node.attr('y'),
             node.attr('r'), 0, 2 * Math.PI);
-          ctx.globalAlpha = 0.7
+          ctx.globalAlpha = 0.7;
           ctx.fill();
           ctx.closePath();
         }
