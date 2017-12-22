@@ -45,6 +45,7 @@ function toogleMap(checkboxElem) {
 
 let timeline_events = events[0];
 let timeline_periods = periods;
+
 //Load airplane crashes data
 d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
     if (error) throw error;
@@ -68,7 +69,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             return d3.sum(d, function() { return 1; });
     }).entries(data)
 
-    const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
+    const crashes_max = d3.max(crashesGroupByYear, d => d.value );
     crashesScale.domain([0, crashes_max ]);
 
 
@@ -107,7 +108,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .style("text-anchor", "end")
         .attr("dy", ".15em")
         .selectAll(".tick")
-        .classed("tick", function(d) { return new Date( d["Date"] ); });
+        .classed("tick", d => new Date( d["Date"] ) );
 
 
     let brush = d3.brushY()
@@ -139,27 +140,23 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
     // Generation
     graph.selectAll('circle')
-          .data(data_graph)
-          .enter().append('g')
-            .each(function(d){
-                d3.select(this).selectAll("circle")
-                      .data(function (d) {
-                        let dict = []; // create an empty array
-                        for(value in d.value ){
-                          dict.push({ key:   d.key, value: value });
-                        }
-                        return dict;
-                      })
-                      .enter().append('circle')
-                    .attr("cx", function(d,j) {
-                        return crashesScale( d.value ) + 1;
-                    })
-                    .attr("cy", function(d) {
-                        return timeScale( new Date( d.key, 1, 1 ) );
-                    })
-                    .attr("r", 1)
-                    .attr("class", "non_brushed")
-            });
+        .data(data_graph)
+        .enter().append('g')
+        .each(function(d){
+            d3.select(this).selectAll("circle")
+              .data(function (d) {
+                let dict = []; // create an empty array
+                for(value in d.value ){
+                  dict.push({ key:   d.key, value: value });
+                }
+                return dict;
+              })
+              .enter().append('circle')
+            .attr("cx", d => crashesScale( d.value ) + 1 )
+            .attr("cy", d => timeScale( new Date( d.key, 1, 1 ) ) )
+            .attr("r", 1)
+            .attr("class", "non_brushed")
+        });
     let circles = graph.selectAll('circle');
 
 
@@ -172,13 +169,9 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .append("rect")
             .attr("class", "event")
             .attr("x", padding - padding / 5 )
-            .attr("y", function(d) {
-              return timeScale( new Date(d.end , 1, 1) );
-            })
+            .attr("y", d => timeScale( new Date(d.end , 1, 1) ) )
             .attr("width", padding / 5 )
-            .attr("height", function(d) {
-                return timeScale( new Date(d.end - d.begin , 1, 1) );
-            })
+            .attr("height", d => timeScale( new Date(d.end - d.begin , 1, 1) ) )
             .style("fill", "#999")
             .on("mouseover", function(){
                 document.body.style.cursor = "pointer";
@@ -198,12 +191,10 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .enter()
             .append("circle")
             .attr("class", "event")
-            .attr("cx", function(d) {
+            .attr("cx", function() {
                 return padding-padding / 10;
             })
-            .attr("cy", function(d) {
-                return timeScale( new Date(d, 1, 1) );
-            })
+            .attr("cy", d => timeScale( new Date(d, 1, 1) ) )
             .attr("r", padding / 10)
             .style("fill", "#999")
             .style("stroke", "#000")
