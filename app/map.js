@@ -100,7 +100,7 @@ function Map() {
         const filter = `
             <p>${filter_names[f]}</p>
             <label class="switch">
-              // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
+               <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
               <span class="slider round"></span>
             </label>
           `
