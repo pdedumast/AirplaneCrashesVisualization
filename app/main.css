@@ -16,7 +16,7 @@ body {
 }
 
 section {
-    width: 100vw;
+    width: 100%;
     display: table;
     height: 100vh;
 }
@@ -55,7 +55,7 @@ section {
 #map, .hiddenCanvas{
     float:left;
     height : 100vh;
-    width : 60vw;
+    width : 75%;
 }
 
 .hiddenCanvas {
@@ -83,7 +83,7 @@ div#tooltip {
 #history{
     float:right;
     height : 15vh;
-    width: 21vw;
+    width: 20%;
     border:1px solid #fff;
     box-shadow:0px 2px 7px #292929;
     border-radius:10px;
@@ -109,7 +109,6 @@ div#tooltip {
     box-shadow:0px 2px 7px #292929;
     color:#fff;
     text-transform:capitalize;
-    
     font-size:20px;
 }
 
