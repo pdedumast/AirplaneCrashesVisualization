@@ -4,10 +4,10 @@ const padding       = 30;
 const width         = window.innerWidth;
 const height        = window.innerHeight;
 
-const mapWidth      = width / 4 * 3;
+const mapWidth      = width / 4 * 2.7;
 const mapHeight     = height ;
 
-const graphWidth    = width  / 4 * 1;
+const graphWidth    = width  / 5 * 1.1;
 const graphHeight   = height / 5 * 4;
 
 
