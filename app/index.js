@@ -165,7 +165,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
     // Display additional informations on timeline
     let date_events = Object.keys(timeline_events);
-    
+
     graph.selectAll("timeline_bars")
             .data(timeline_periods)
             .enter()
@@ -173,7 +173,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .attr("class", "event")
             .attr("x", padding - padding / 5 )
             .attr("y", function(d) {
-              return timeScale( new Date(d.end , 1, 1) );
+              return timeScale( new Date(d.begin , 1, 1) );
             })
             .attr("width", padding / 5 )
             .attr("height", function(d) {
@@ -192,7 +192,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 d3.selectAll("timeline_bar").style("fill", "white");
                 d3.select(this).style("fill", "red");
            });
-    
+
         graph.selectAll("timeline_circle")
             .data(date_events)
             .enter()
@@ -219,7 +219,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 d3.selectAll("timeline_circle").style("fill", "white");
                 d3.select(this).style("fill", "red");
            });
-    
+
     function isBrushed(brush_coords, cy) {
          let yo = brush_coords[0],
              y1 = brush_coords[1];
@@ -264,4 +264,3 @@ d3.select('#map').on('mousemove', function(){
     var mouseY = d3.event.layerY || d3.event.offsetY;
     map.showTooltip(mouseX, mouseY);
 });
-
