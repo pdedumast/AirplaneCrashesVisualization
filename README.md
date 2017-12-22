@@ -44,6 +44,9 @@ In root directory `AirplaneCrashesVisualization`:
 * `npm start`
 * in your brower, go to [localhost:3000](http://localhost:3000)
 
+Or simply: [Launch App](https://pdedumast.github.io/AirplaneCrashesVisualization/)
+
+
 ## References
 
 * Countries GeoJson : https://github.com/johan/world.geo.json
@@ -56,5 +59,3 @@ In root directory `AirplaneCrashesVisualization`:
 * Filter crashes after brush : https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling
 
 ## License
-
-
