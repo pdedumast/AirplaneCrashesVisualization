@@ -180,10 +180,11 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 document.body.style.cursor = "default";
             })
             .on('click', function(d) {
+                // Clean highlighted events and highlight selected event
                 Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "#999");
-                document.getElementById("text").innerHTML = d.begin + " - " + d.end + " : " + d.event;
-                d3.selectAll("timeline_bar").style("fill", "white");
                 d3.select(this).style("fill", "red");
+                // Display event details in the history pane
+                document.getElementById("text").innerHTML = d.begin + " - " + d.end + "<BR>" + d.event;
            });
 
         graph.selectAll("timeline_circle")
@@ -205,10 +206,12 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
                 document.body.style.cursor = "default";
             })
             .on('click', function(d) {
+                // Clean highlighted events and highlight selected event
                 Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "#999");
-                document.getElementById("text").innerHTML = d + " : " + timeline_events[d];
-                d3.selectAll("timeline_circle").style("fill", "white");
                 d3.select(this).style("fill", "red");
+                // Display event details in the history pane
+                document.getElementById("text").innerHTML = d + "<BR>" + timeline_events[d];
+                
            });
 
     function isBrushed(brush_coords, cy) {
