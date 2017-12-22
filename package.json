@@ -5,6 +5,9 @@
   "author": "Thibaut Chamard <tchamard@gmail.com>",
   "main": "app/server.js",
   "scripts": {
-    "start":"http-server -a localhost -p 3000"
+    "start": "http-server -a localhost -p 3000"
+  },
+  "dependencies": {
+    "http-server": "^0.10.0"
   }
 }

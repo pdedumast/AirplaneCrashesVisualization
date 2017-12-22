@@ -3,25 +3,6 @@ function Map() {
   const color = {
     map: "#656565",
     crashes: "#ff5252",
-
-    navy: "#001F3F",
-    blue: "#0074D9",
-    aqua: "#7FDBFF",
-    teal: "#39CCCC",
-    olive: "#3D9970",
-    green: "#2ECC40",
-    lime: "#01FF70",
-    yellow: "#FFDC00",
-    orange: "#FF851B",
-    red: "#FF4136",
-    fuchsia: "#F012BE",
-    purple: "#B10DC9",
-    maroon: "#85144B",
-    white: "#FFFFFF",
-    silver: "#DDDDDD",
-    gray: "#AAAAAA",
-    black: "#111111",
-
     null: "rgba(0,0,0,0)"
   }
 
@@ -31,17 +12,15 @@ function Map() {
   }
 
   const filter_names = {
-    map: "map",
-    mechanical_fail: "mechanical fail",
-    navigation_error: "navigation error",
-    weather: "weather",
-    shot_down: "shot down",
-    //crash_takingoff: "crash takingoff",
-    //crash_landing: "crash landing",
-    air_collision: "air colsision",
-    human_error: "human error",
-    terract:"terrorist attack",
-    no_tag: "no tag"
+    map: "Map",
+    mechanical_fail: "Mechanical fail",
+    navigation_error: "Navigation error",
+    weather: "Weather",
+    shot_down: "Shot down",
+    air_collision: "Air collision",
+    human_error: "Human error",
+    terract:"Terrorist attack",
+    unknown: "Unknown"
   }
 
 
@@ -57,11 +36,9 @@ function Map() {
     weather: true,
     shot_down: true,
     terract: true,
-    //crash_takingoff: true,
-    //crash_landing: true,
     air_collision: true,
     human_error: true,
-    no_tag: true
+    unknown: true
   };
 
   const projection = d3.geoNaturalEarth1()
@@ -120,13 +97,12 @@ function Map() {
       const filters = document.querySelector('#filters-list')
       let filters_list="";
       for (let f in filter_names) {
-        const filter = `<div class="setting">
+        const filter = `
             <p>${filter_names[f]}</p>
             <label class="switch">
-              <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
+              // <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
               <span class="slider round"></span>
             </label>
-            </div>
           `
         filters_list += filter ;
       }
@@ -154,13 +130,11 @@ function Map() {
       }
     }
 
-
     for(let t in tags){
       if(display[tags[t]]){
         return true;
       }
     }
-    //console.log(tags)
     return false;
   }
 
@@ -168,9 +142,6 @@ function Map() {
     let ctx = canvas.node().getContext("2d");
     crashes.each(function() {
       var node = d3.select(this);
-      //context.fillStyle = 'steelblue';
-      //console.log(node.attr('tags'))
-      //if(node.attr('tags').indexOf('mechanical_fail')>=0)
       if(areFiltersActivated(node.attr('tags'))){
         if (node.attr('year') > range[0] && node.attr('year') <= range[1]) {
           ctx.beginPath();
@@ -178,7 +149,7 @@ function Map() {
           ctx.arc(node.attr('x'),
             node.attr('y'),
             node.attr('r'), 0, 2 * Math.PI);
-          ctx.globalAlpha = 0.7;
+          ctx.globalAlpha = 0.7
           ctx.fill();
           ctx.closePath();
         }
@@ -316,53 +287,37 @@ function Map() {
   }
 
   // -----------------------------------------------------------------
-    
-    this.showTooltip = function(mouseX,mouseY){
 
-        // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
-        var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
-        var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+  this.showTooltip = function(mouseX, mouseY) {
 
-        // Get the data from our map
-        var nodeData = colorToNode[colKey];
+    // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
+    var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
+    var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
 
-        if (nodeData) {
+    // Get the data from our map
+    var nodeData = colorToNode[colKey];
 
-            // Show the tooltip only when there is nodeData found by the mouse
-           tooltip
-                .style('display','inline-block')
-                .style('opacity', 1)
-                .style('top', d3.event.pageY + 5 + 'px')
-                .style('left', d3.event.pageX + 5 + 'px')
-                .html( (nodeData.Date) + "<br>"
-                    + (nodeData.Location) + "<br>"
-                    + "Operator : " + (nodeData.Operator) + "<br>"
-                    + "Fatalities : " + parseInt(nodeData.Fatalities) + "/" + parseInt(nodeData.Aboard));
-        } else {
+    if (nodeData) {
 
-            // when the mouse doesn't find nodeData hide tooltip and reset the map to default view
-            tooltip.style('display', 'None');
-            resetCanvas();
+      // Show the tooltip only when there is nodeData found by the mouse
+      tooltip
+        .style('display', 'inline-block')
+        .style('opacity', 1)
+        .style('top', d3.event.pageY + 5 + 'px')
+        .style('left', d3.event.pageX + 5 + 'px')
+        .html((nodeData.Date) + "<br>" +
+          (nodeData.Location) + "<br>" +
+          "Operator : " + (nodeData.Operator) + "<br>" +
+          "Fatalities : " + parseInt(nodeData.Fatalities) + "/" + parseInt(nodeData.Aboard));
+    } else {
 
-        }
+      // when the mouse doesn't find nodeData hide tooltip and reset the map to default view
+      tooltip.style('display', 'None');
+      resetCanvas();
+
     }
-    
-    this.highlightCrash = function(mouseX,mouseY){
-        
-        // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
-        var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
-        var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+  }
 
-        // Get the data from our map
-        var nodeData = colorToNode[colKey];
-
-        if (nodeData) {
-            document.body.style.cursor = 'pointer';
-        } else {
-             document.body.style.cursor = 'default';
-        }
-    }
-    
-    this.setUp();
+  this.setUp();
 
 }
