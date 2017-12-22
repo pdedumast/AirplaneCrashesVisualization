@@ -91,13 +91,12 @@ div#tooltip {
 
 
 .setting{
-
   color:red;
 }
 
 .container {
   position: absolute;
-    height: 100vw;
+  transform: translate(78px,10px);
 }
 
 .draggable {
@@ -109,4 +108,13 @@ div#tooltip {
 }
 .collapsed{
   color:red
+}
+.card{
+  background-color:rgba(0,0,0,0);
+}
+.card-header{
+  background-color:rgb(0,0,0);
+}
+.card-body{
+  background-color:rgba(255,255,255,0.5);
 }
