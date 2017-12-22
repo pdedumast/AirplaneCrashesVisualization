@@ -4,11 +4,11 @@ const padding       = 30;
 const width         = window.innerWidth;
 const height        = window.innerHeight;
 
-const mapWidth      = width / 4 * 3;
+const mapWidth      = width / 4 * 2.7;
 const mapHeight     = height ;
 
-const graphWidth    = width  / 4 * 1;
-const graphHeight   = height;
+const graphWidth    = width  / 5 * 1.1;
+const graphHeight   = height / 5 * 4;
 
 
 let tooltip = d3.select("body").append("div").attr("id", "tooltip");
@@ -40,7 +40,8 @@ d3.json(pathname+"/data/map.geo.json", function(error,data) {
 
 
 
-
+let timeline_events = events[0];
+let timeline_periods = periods;
 
 //Load airplane crashes data
 d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
@@ -65,7 +66,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             return d3.sum(d, function() { return 1; });
     }).entries(data)
 
-    const crashes_max = d3.max(crashesGroupByYear, function(d) { return d.value; });
+    const crashes_max = d3.max(crashesGroupByYear, d => d.value );
     crashesScale.domain([0, crashes_max ]);
 
 
@@ -88,7 +89,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
             .tickFormat( d3.timeFormat("%Y") );
 
     graph.append("g")
-        .attr("class", "axis")
+        .attr("class", "xaxis")
         .attr("transform", "translate(0," + padding + ")")
         .call(xAxis)
         .selectAll("text") // Rotate labels
@@ -97,18 +98,19 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .attr("dy", "-1em");
 
     graph.append("g")
-        .attr("class", "axis axis--grid")
+        .attr("class", "yaxis")
          .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis)
         .selectAll("text") // Rotate labels
         .style("text-anchor", "end")
         .attr("dy", ".15em")
         .selectAll(".tick")
-        .classed("tick--minor", function(d) { return new Date( d["Date"] ); });
+        .classed("tick", d => new Date( d["Date"] ) );
+
 
 
     let brush = d3.brushY()
-            .extent([[0, padding], [ graphWidth - padding,  graphHeight - padding ]])
+            .extent([[padding, padding], [ graphWidth - padding,  graphHeight - padding ]])
             .on("start brush", clearBrushedCircles )
             .on("brush", hightlightCircles)
             .on("end", filterCrashes);
@@ -136,47 +138,79 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 
     // Generation
     graph.selectAll('circle')
-          .data(data_graph)
-          .enter().append('g')
-            .each(function(d){
-                d3.select(this).selectAll("circle")
-                      .data(function (d) {
-                        let dict = []; // create an empty array
-                        for(value in d.value ){
-                          dict.push({ key:   d.key, value: value });
-                        }
-                        return dict;
-                      })
-                      .enter().append('circle')
-                    .attr("cx", function(d,j) {
-                        return crashesScale( d.value );
-                    })
-                    .attr("cy", function(d) {
-                        return timeScale( new Date( d.key, 1, 1 ) );
-                    })
-                    .attr("r", 1)
-                    .attr("class", "non_brushed")
-            });
-  let circles = graph.selectAll('circle');
+        .data(data_graph)
+        .enter().append('g')
+        .each(function(d){
+            d3.select(this).selectAll("circle")
+              .data(function (d) {
+                let dict = []; // create an empty array
+                for(value in d.value ){
+                  dict.push({ key:   d.key, value: value });
+                }
+                return dict;
+              })
+              .enter().append('circle')
+            .attr("cx", d => crashesScale( d.value ) + 1 )
+            .attr("cy", d => timeScale( new Date( d.key, 1, 1 ) ) )
+            .attr("r", 1)
+            .attr("class", "non_brushed")
+        });
+    let circles = graph.selectAll('circle');
 
 
+    // Display additional informations on timeline
+    let date_events = Object.keys(timeline_events);
 
-    // // 2. Display
-    // let circles = graph.selectAll("circle")
-    //                     .data(crashesGroupByYear)
-    //                     .enter()
-    //                     .append("circle")
-    //                     .attr("cx", function(d) {
-    //                         return timeScale( new Date( d.key, 1, 1 ) );
-    //                     })
-    //                     .attr("cy", function(d) {
-    //                         return crashesScale( d.value );
-    //                     })
-    //                     .attr("r", 4)
-    //                     .attr("class", "non_brushed");
+    graph.selectAll("timeline_bars")
+            .data(timeline_periods)
+            .enter()
+            .append("rect")
+            .attr("class", "event")
+            .attr("x", padding - padding / 5 )
+            .attr("y", d => timeScale( new Date(d.begin , 1, 1) ) )
+            .attr("width", padding / 5 )
+            .attr("height", d => timeScale( new Date(d.end - d.begin , 1, 1) ) )
+            .style("fill", "#999")
+            .on("mouseover", function(){
+                document.body.style.cursor = "pointer";
+            })
+            .on("mouseout", function(){
+                document.body.style.cursor = "default";
+            })
+            .on('click', function(d) {
+                // Clean highlighted events and highlight selected event
+                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "#999");
+                d3.select(this).style("fill", "red");
+                // Display event details in the history pane
+                document.getElementById("text").innerHTML = d.begin + " - " + d.end + "<BR>" + d.event;
+           });
 
-
-
+        graph.selectAll("timeline_circle")
+            .data(date_events)
+            .enter()
+            .append("circle")
+            .attr("class", "event")
+            .attr("cx", function() {
+                return padding-padding / 10;
+            })
+            .attr("cy", d => timeScale( new Date(d, 1, 1) ) )
+            .attr("r", padding / 10)
+            .style("fill", "#999")
+            .style("stroke", "#000")
+            .on("mouseover", function(){
+                document.body.style.cursor = "pointer";
+            })
+            .on("mouseout", function(){
+                document.body.style.cursor = "default";
+            })
+            .on('click', function(d) {
+                // Clean highlighted events and highlight selected event
+                Array.from( document.getElementsByClassName("event") ).map( e => e.style.fill = "#999");
+                d3.select(this).style("fill", "red");
+                // Display event details in the history pane
+                document.getElementById("text").innerHTML = d + "<BR>" + timeline_events[d];
+                
+           });
 
     function isBrushed(brush_coords, cy) {
          let yo = brush_coords[0],
@@ -211,25 +245,14 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
 });
 
 
+
+d3.select('#map').on('mousemove', function(){
+    var mouseX = d3.event.layerX || d3.event.offsetX;
+    var mouseY = d3.event.layerY || d3.event.offsetY;
+    map.highlightCrash(mouseX, mouseY);
+});
  d3.select('#map').on('click', function() {
     var mouseX = d3.event.layerX || d3.event.offsetX;
     var mouseY = d3.event.layerY || d3.event.offsetY;
     map.showTooltip(mouseX, mouseY);
 });
-
-
-/*
-Sources
-Countries GeoJson : https://github.com/johan/world.geo.json
-Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
-Zooming and dragging : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
-ToolTip on svg : https://bl.ocks.org/alandunning/274bf248fd0f362d64674920e85c1eb7
-Tooltip on canvas : https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444
-Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
-
-Brush:
-- https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-- http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b (Color)
-- https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling (Filter )
-Dot plot histogram: Fhttps://bl.ocks.org/gcalmettes/95e3553da26ec90fd0a2890a678f3f69
-*/

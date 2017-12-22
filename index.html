@@ -36,22 +36,22 @@
 
     <div class="wrapper">
 
-        <nav id="sidebar" class=active>
+        <nav id="sidebar">
             <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <img alt="logo" src="img/logo.svg" />
+                <a href="#top"><img alt="logo" src="img/logo.svg" /></a>
             </div>
 
             <!-- Sidebar Links -->
             <ul class="list-unstyled components">
-                <li onclick(){}>
+                <li>
                     <a href="#map">
                         <i class="fas fa-map"></i>
                         Map
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#video">
                         <i class="fas fa-video"></i>
                         Video
                     </a>
@@ -63,7 +63,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="#authors">
                         <i class="fas fa-users"></i>
                         Authors
                     </a>
@@ -80,54 +80,80 @@
              </div>
             </section>
 
-            <section id="map-content">
-              <div class="container">
-              <div id="accordion" class="draggable" role="tablist">
-                <div class="card">
-                  <div class="card-header" role="tab" id="headingOne">
-                    <h5 class="mb-0">
-                      <a data-toggle="collapse" href="#collapseOne" aria-controls="collapseOne">
-                        <i class="fas fa-cog"></i>
-                      </a>
-                    </h5>
-                  </div>
+            <section>
+                
+                
+                 <div class="container">
+                  <div id="accordion" class="draggable" role="tablist">
+                    <div class="card">
+                      <div class="card-header" role="tab" id="headingOne">
+                        <h5 class="mb-0">
+                          <a data-toggle="collapse" href="#collapseOne" aria-controls="collapseOne">
+                            <i class="fas fa-cog"></i>
+                          </a>
+                        </h5>
+                      </div>
 
-                  <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                    <div class="card-body">
+                      <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
 
-                      <a id='filters-list' style="font-size: smaller;
-    display: grid;
-    grid-template-columns: 100px 100px 100px;"></a>
+                          <a id='filters-list' style="font-size: smaller;
+        display: grid;
+        grid-template-columns: 100px 100px 100px;"></a>
 
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-
-                <div id="map"></div>
-                <div id="graph"></div>
-
-            </section>
-
-            <section id="video_content">
-              [video]
-              [video]
-              [video]
+                <div class="content" id="map"><a href="map"></a></div>
+                <div class="content" id="history">
+                    <div id="header">
+                        <p>History of Aviation</p>
+                    </div>
+                    <div id="info">
+                        <p id="text"><i>Click on any event on the timeline below to find out more about the history of aviation...</i></p>
+                    </div>
+                </div>
+                <div class="content" id="graph"></div>
 
             </section>
-
-            <section id="authors-content">
-              [authors]
+            
+            <section>
+                <div class="content" id="video"><a href="video"></a>
+                    <iframe src="https://www.youtube.com/embed/6NtTH8m45o4?rel=0" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen style="height: 100%;width: 100%;"></iframe>
+                </div>
+            </section>
+            
+            <section>
+                <div class="content" id="authors"><a href="authors"></a>
+                    <div class="author">
+                        <a href="https://github.com/chamard"><img src="img/tchamard.jpg"></a>
+                        <br><br>
+                        <p>Thibault Chamard</p>
+                        <a href="mailto:thibaut.chamard@epfl.ch">thibault.chamard@epfl.ch</a>
+                    </div>
+                    <div class="author">
+                        <a href="https://github.com/pdedumast"><img src="img/pdedumast.jpg"></a>
+                        <br><br>
+                        <p>Priscille Guerrier De Dumast</p>
+                        <a href="mailto:priscille.guerrierdedumast@epfl.ch">priscille.guerrierdedumast@epfl.ch</a>
+                    </div>
+                    <div class="author">
+                        <a href="https://github.com/mathmout"><img src="img/mmareite.jpg"></a>
+                        <br><br>
+                        <p>Mathilde Mareite</p>
+                        <a href="mailto:mathilde.mareite@epfl.ch">mathilde.mareite@epfl.ch</a>
+                    </div>
+                </div>
             </section>
 
         </div>
 
       </div>
 
-
-    <script src="app/filters.js"></script>
+    <script src="data/timeline.json"></script>
     <script src="app/map.js"></script>
     <script src="app/index.js"></script>
 

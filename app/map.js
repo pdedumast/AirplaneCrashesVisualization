@@ -316,37 +316,53 @@ function Map() {
   }
 
   // -----------------------------------------------------------------
+    
+    this.showTooltip = function(mouseX,mouseY){
 
-  this.showTooltip = function(mouseX, mouseY) {
+        // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
+        var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
+        var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
 
-    // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
-    var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
-    var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
+        // Get the data from our map
+        var nodeData = colorToNode[colKey];
 
-    // Get the data from our map
-    var nodeData = colorToNode[colKey];
+        if (nodeData) {
 
-    if (nodeData) {
+            // Show the tooltip only when there is nodeData found by the mouse
+           tooltip
+                .style('display','inline-block')
+                .style('opacity', 1)
+                .style('top', d3.event.pageY + 5 + 'px')
+                .style('left', d3.event.pageX + 5 + 'px')
+                .html( (nodeData.Date) + "<br>"
+                    + (nodeData.Location) + "<br>"
+                    + "Operator : " + (nodeData.Operator) + "<br>"
+                    + "Fatalities : " + parseInt(nodeData.Fatalities) + "/" + parseInt(nodeData.Aboard));
+        } else {
 
-      // Show the tooltip only when there is nodeData found by the mouse
-      tooltip
-        .style('display', 'inline-block')
-        .style('opacity', 1)
-        .style('top', d3.event.pageY + 5 + 'px')
-        .style('left', d3.event.pageX + 5 + 'px')
-        .html((nodeData.Date) + "<br>" +
-          (nodeData.Location) + "<br>" +
-          "Operator : " + (nodeData.Operator) + "<br>" +
-          "Fatalities : " + parseInt(nodeData.Fatalities) + "/" + parseInt(nodeData.Aboard));
-    } else {
+            // when the mouse doesn't find nodeData hide tooltip and reset the map to default view
+            tooltip.style('display', 'None');
+            resetCanvas();
 
-      // when the mouse doesn't find nodeData hide tooltip and reset the map to default view
-      tooltip.style('display', 'None');
-      resetCanvas();
-
+        }
     }
-  }
+    
+    this.highlightCrash = function(mouseX,mouseY){
+        
+        // Pick the colors from where our mouse is then stringify it in a way our map-object can read it
+        var col = hiddenContext.getImageData(mouseX, mouseY, 1, 1).data;
+        var colKey = 'rgb(' + col[0] + ',' + col[1] + ',' + col[2] + ')';
 
-  this.setUp();
+        // Get the data from our map
+        var nodeData = colorToNode[colKey];
+
+        if (nodeData) {
+            document.body.style.cursor = 'pointer';
+        } else {
+             document.body.style.cursor = 'default';
+        }
+    }
+    
+    this.setUp();
 
 }

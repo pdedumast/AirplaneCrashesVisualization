@@ -1,6 +1,7 @@
-/**{
-  box-sizing: border-box;
-}*/
+/* ---------------------------------------------------
+    GENERAL STYLE
+----------------------------------------------------- */
+
 body {
     background-color: #222;
     font-family: 'Lato', sans-serif;
@@ -15,8 +16,8 @@ body {
 }
 
 section {
-    width: 100vw;
-    display: flex;
+    width: 100%;
+    display: table;
     height: 100vh;
 }
 
@@ -24,12 +25,14 @@ section {
     display: table-cell;
 }
 
-
-#intro-content{
+/* ---------------------------------------------------
+    HOMEPAGE STYLE
+----------------------------------------------------- */
+.intro {
     font-family: 'Alegreya Sans SC', sans-serif;
     color: white;
     padding: 0 7%;
-    background-image: url("../img/airplane4.jpeg");
+    background-image: url("../img/airplane.jpeg");
     background-size: cover;
     vertical-align: middle;
 }
@@ -37,22 +40,20 @@ section {
 .title{
     font-size: 4em;
     display: block;
-    font-weight: 300;
 }
 .subtitle{
     font-size: 2em;
-    font-weight: 500;
 }
 
-.map, .hiddenCanvas{
+
+
+/* ---------------------------------------------------
+    MAP STYLE
+----------------------------------------------------- */
+#map, .hiddenCanvas{
     float:left;
     height : 100vh;
-    width : 60vw;
-}
-.graph{
-    float:left;
-    height : 100vh;
-    width: 30vw;
+    width : 75%;
 }
 
 .hiddenCanvas {
@@ -73,11 +74,59 @@ div#tooltip {
 
 
 
-/* Graph */
-.axis, .axis text{
-    fill : #999;
+/* ---------------------------------------------------
+    HISTORY PANEL STYLE
+----------------------------------------------------- */
+
+
+#history{
+    float:right;
+    height : 15vh;
+    width: 20%;
+    border:1px solid #fff;
+    box-shadow:0px 2px 7px #292929;
+    border-radius:10px;
+    color:#fff;
+    margin: 2em 2em 0 2em;
+    text-align: center;
+    font-family: 'Alegreya Sans SC', sans-serif;
+;
+}
+#history > #info{
+    display:table;
+    height:60%;
+    width  100%;
+    margin:auto;
+}
+#history > #info > #text{
+    display: table-cell;
+    vertical-align: middle;
+    margin: auto;
+}
+#history > #header {
+    border-bottom:1px solid #fff;
+    box-shadow:0px 2px 7px #292929;
+    color:#fff;
+    text-transform:capitalize;
+    font-size:20px;
 }
 
+
+
+
+/* ---------------------------------------------------
+    GRAPH STYLE
+----------------------------------------------------- */
+#graph{
+    float:right;
+}
+
+.xaxis, .xaxis text,.yaxis text{
+    fill : #999;
+}
+.tick, .tick line,.yaxis path{
+  stroke:#999;
+}
 .brushed {
     fill: #ffe20c;
     stroke: None;
@@ -89,6 +138,51 @@ div#tooltip {
     opacity: 0.5;
 }
 
+/* Graph */
+.axis, .axis text{
+    fill : #999;
+}
+
+
+/* ---------------------------------------------------
+    VIDEO STYLE
+----------------------------------------------------- */
+
+#video{
+    height:100vh;
+    padding:3em;
+}
+
+/* ---------------------------------------------------
+    AUTHOR STYLE
+----------------------------------------------------- */
+ 
+#authors{
+    text-align: center;
+    vertical-align: middle;
+}
+.author{
+    display:inline-block;
+    margin:5em;
+    font-size:16px;
+    color:#fff;
+}
+
+.author p{
+    font-family: 'Alegreya Sans SC', sans-serif;
+    font-size:26px;
+}
+
+.author img{
+    border-radius: 50%;
+    width:20em;
+}
+
+
+
+/* ---------------------------------------------------
+    SETTINGS STYLE
+----------------------------------------------------- */
 
 .setting{
   color:red;
@@ -118,3 +212,4 @@ div#tooltip {
 .card-body{
   background-color:rgba(255,255,255,0.5);
 }
+   
