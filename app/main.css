@@ -28,7 +28,7 @@ section {
 /* ---------------------------------------------------
     HOMEPAGE STYLE
 ----------------------------------------------------- */
-.intro {
+#intro-content {
     font-family: 'Alegreya Sans SC', sans-serif;
     color: white;
     padding: 0 7%;
