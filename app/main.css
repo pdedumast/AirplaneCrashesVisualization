@@ -25,8 +25,6 @@ section {
     display: table-cell;
 }
 
-
-
 /* ---------------------------------------------------
     HOMEPAGE STYLE
 ----------------------------------------------------- */
@@ -75,6 +73,7 @@ div#tooltip {
 }
 
 
+
 /* ---------------------------------------------------
     HISTORY PANEL STYLE
 ----------------------------------------------------- */
@@ -103,6 +102,10 @@ div#tooltip {
     display: table-cell;
     vertical-align: middle;
     margin: auto;
+    text-align: justify;
+    line-height: 1em;
+    text-align-last: center;
+    padding:10px;
 }
 #history > #header {
     border-bottom:1px solid #fff;
@@ -110,6 +113,12 @@ div#tooltip {
     color:#fff;
     text-transform:capitalize;
     font-size:20px;
+
+}
+
+#history > #header > p{
+    margin-top: 0;
+    margin-bottom: 0; 
 }
 
 
@@ -139,7 +148,25 @@ div#tooltip {
     opacity: 0.5;
 }
 
+/* Graph */
+.axis, .axis text{
+    fill : #999;
+}
 
+
+/* ---------------------------------------------------
+    VIDEO STYLE
+----------------------------------------------------- */
+
+#video{
+    height:100vh;
+    padding:3em;
+}
+
+/* ---------------------------------------------------
+    AUTHOR STYLE
+----------------------------------------------------- */
+ 
 #authors{
     text-align: center;
     vertical-align: middle;
@@ -161,7 +188,38 @@ div#tooltip {
     width:20em;
 }
 
-#video{
-    height:100vh;
-    padding:3em;
+
+
+/* ---------------------------------------------------
+    SETTINGS STYLE
+----------------------------------------------------- */
+
+.setting{
+  color:red;
 }
+
+.container {
+  position: absolute;
+  transform: translate(10px,10px);
+}
+
+.draggable {
+  border-radius: 10px;
+  margin: 0 10px 10px 0;
+  float: left;
+  left: 88px;
+  top: 68px;
+}
+.collapsed{
+  color:red
+}
+.card{
+  background-color:rgba(0,0,0,0);
+}
+.card-header{
+  background-color:rgb(0,0,0);
+}
+.card-body{
+  background-color:rgba(255,255,255,0.5);
+}
+   

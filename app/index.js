@@ -13,7 +13,11 @@ const graphHeight   = height / 5 * 4;
 
 let tooltip = d3.select("body").append("div").attr("id", "tooltip");
 
-const map = new Map();
+const map = new Map(mapWidth,mapHeight);
+
+function onFilterChange(checkboxElem) {
+  map.changeFilter(checkboxElem);
+}
 
 //Create SVG element : graph
 let graph = d3.select("#graph")
@@ -34,20 +38,13 @@ d3.json(pathname+"/data/map.geo.json", function(error,data) {
     map.storeMap(data);
 })
 
-function toogleMap(checkboxElem) {
-  if (checkboxElem.checked) {
-    map.hideMap();
-  } else {
-    map.hideMap();
-  }
-}
 
 
 let timeline_events = events[0];
 let timeline_periods = periods;
 
 //Load airplane crashes data
-d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
+d3.csv(pathname + "/data/aircrashes.csv", function(error, data) {
     if (error) throw error;
 
     // Define scales domain
@@ -109,6 +106,7 @@ d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
         .attr("dy", ".15em")
         .selectAll(".tick")
         .classed("tick", d => new Date( d["Date"] ) );
+
 
 
     let brush = d3.brushY()
