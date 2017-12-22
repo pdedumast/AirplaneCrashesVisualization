@@ -49,13 +49,13 @@ Or simply: [Launch App](https://pdedumast.github.io/AirplaneCrashesVisualization
 
 ## References
 
-* Countries GeoJson : https://github.com/johan/world.geo.json
-* Geomapping : http://chimera.labs.oreilly.com/books/1230000000345/ch12.html
-* Zoom and drag on the map : https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2
-* Tooltip on a canvas element : https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444
-* Plot dots on a canvas : http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4
-* Brush : https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172
-* Highlight brushed circles : http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b
-* Filter crashes after brush : https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling
+* Countries GeoJson : [here](https://github.com/johan/world.geo.json)
+* Geomapping : [here](http://chimera.labs.oreilly.com/books/1230000000345/ch12.html)
+* Zoom and drag on the map : [here](https://bl.ocks.org/iamkevinv/0a24e9126cd2fa6b283c6f2d774b69a2)
+* Tooltip on a canvas element : [here](https://medium.freecodecamp.org/d3-and-canvas-in-3-steps-8505c8b27444)
+* Plot dots on a canvas : [here](http://bl.ocks.org/Jverma/39f9b6d9d276d7c9232cd53fd91190c4)
+* Brush : [here](https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172)
+* Highlight brushed circles : [here](http://bl.ocks.org/feyderm/6bdbc74236c27a843db633981ad22c1b)
+* Filter crashes after brush : [here](https://stackoverflow.com/questions/25656352/javascript-d3-js-initialize-brush-with-brush-extent-and-stop-data-from-spilling)
 
 ## License
