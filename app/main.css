@@ -193,12 +193,17 @@ div#tooltip {
 /* ---------------------------------------------------
     SETTINGS STYLE
 ----------------------------------------------------- */
-
+#filters-list{
+    font-size:smaller;
+    display: grid; 
+    grid-template-columns: 120px 120px 120px;
+}
 .setting{
     color: #000000ba;
     line-height: 10px;
-    margin: 3px;
-    font-weight: 500;
+    margin-bottom: 3px;
+    font-weight: 600;
+    text-align:center;
 }
 
 .container {
