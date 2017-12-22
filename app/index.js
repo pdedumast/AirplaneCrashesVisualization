@@ -44,7 +44,7 @@ let timeline_events = events[0];
 let timeline_periods = periods;
 
 //Load airplane crashes data
-d3.csv(pathname + "/data/aircrashes2.csv", function(error, data) {
+d3.csv(pathname + "/data/aircrashes.csv", function(error, data) {
     if (error) throw error;
 
     // Define scales domain
