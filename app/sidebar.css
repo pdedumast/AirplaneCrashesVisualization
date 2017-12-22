@@ -30,7 +30,8 @@ a, a:hover, a:focus {
 }
 
 #sidebar {
-    position: fixed;
+    position: sticky;
+    top:0;
     height: 100vh;
     min-width: 80px;
     max-width: 80px;
