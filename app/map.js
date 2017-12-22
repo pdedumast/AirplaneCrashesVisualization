@@ -124,7 +124,7 @@ function Map() {
     tags = tags.split(",");
 
     if(tags== ""){
-      if(display.no_tag == true){
+      if(display.unknown == true){
         return true;
       }else{
         return false;
