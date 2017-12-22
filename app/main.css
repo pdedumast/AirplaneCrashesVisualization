@@ -102,6 +102,10 @@ div#tooltip {
     display: table-cell;
     vertical-align: middle;
     margin: auto;
+    text-align: justify;
+    line-height: 1em;
+    text-align-last: center;
+    padding:10px;
 }
 #history > #header {
     border-bottom:1px solid #fff;
@@ -109,6 +113,12 @@ div#tooltip {
     color:#fff;
     text-transform:capitalize;
     font-size:20px;
+
+}
+
+#history > #header > p{
+    margin-top: 0;
+    margin-bottom: 0; 
 }
 
 
@@ -190,7 +200,7 @@ div#tooltip {
 
 .container {
   position: absolute;
-  transform: translate(78px,10px);
+  transform: translate(10px,10px);
 }
 
 .draggable {
