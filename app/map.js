@@ -94,16 +94,17 @@ function Map() {
     (() => {
       'use strict'
 
-      const filters = document.querySelector('#filters-list')
+      const filters = document.querySelector('#filters-list');
       let filters_list="";
       for (let f in filter_names) {
-        const filter = `
-            <p>${filter_names[f]}</p>
-            <label class="switch">
-               <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\" checked">
-              <span class="slider round"></span>
-            </label>
-          `
+        const filter = `<div class="setting">
+          <p>${filter_names[f]}</p>
+          <label class="switch">
+            <input type="checkbox" name="${f}" onchange=\"onFilterChange(this.name)\"">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        `
         filters_list += filter ;
       }
       filters.innerHTML += filters_list;
@@ -149,7 +150,7 @@ function Map() {
           ctx.arc(node.attr('x'),
             node.attr('y'),
             node.attr('r'), 0, 2 * Math.PI);
-          ctx.globalAlpha = 0.7
+          ctx.globalAlpha = 0.7;
           ctx.fill();
           ctx.closePath();
         }
